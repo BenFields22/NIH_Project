@@ -3,13 +3,6 @@
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
 
-- run:
-    name: Install Docker Compose
-    command: |
-      curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-      chmod +x ~/docker-compose
-      sudo mv ~/docker-compose /usr/local/bin/docker-compose
-
 version: 2
 jobs:
   build:
@@ -26,7 +19,13 @@ jobs:
 
     steps:
       - checkout
-
+      - run:
+          name: Install Docker Compose
+          command: |
+            curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+            
       - setup_remote_docker
 
       - run:
