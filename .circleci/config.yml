@@ -36,10 +36,10 @@ jobs:
       - run:
           name: check frontend
           command: |
-            docker run --network container:nih_project_frontend \
+            docker run --network container:nih_project_frontend_1 \
               appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:3000
       - run:
           name: check backend
           command: |
-            docker run --network container:nih_project_backend \
+            docker run --network container:nih_project_backend_1 \
               appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:8080
