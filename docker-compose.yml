@@ -1,12 +1,14 @@
 version: '2'
 services:
   backend:
+    container_name: nih_backend
     build: ./node_backend/
     ports:
       - "8080:8080"
     volumes:
       - ./node_backend:/usr/src/app
   frontend:
+    container_name: nih_frontend
     build: ./frontend/
     ports:
       - "3000:3000"
