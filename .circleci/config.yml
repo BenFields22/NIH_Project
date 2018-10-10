@@ -25,13 +25,21 @@ jobs:
             curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
             chmod +x ~/docker-compose
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
-            
+
       - setup_remote_docker
 
       - run:
-          name: Start container and verify it's working
+          name: Start containers
           command: |
             set -x
             docker-compose up -d
-            docker run --network container:contacts \
+      - run:
+          name: check frontend
+          command: |
+            docker run --network container:nih_project_frontend \
               appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:3000
+      - run:
+          name: check backend
+          command: |
+            docker run --network container:nih_project_backend \
+              appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:8080
