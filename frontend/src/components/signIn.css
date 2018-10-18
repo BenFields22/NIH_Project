@@ -1,0 +1,44 @@
+.SignIn{
+  background-color:#DDD;
+  margin:0px;
+  padding:0px;
+  height:95vh;
+  width:100vw;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.cont{
+  width:auto;
+  height:auto;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top:auto;
+  margin-bottom:auto;
+}
+
+.SignIn h1{
+  margin:0px;
+  padding:0px;
+}
+
+.InForm input{
+  margin:5px;
+  width: 200px;
+  height:25px;
+  border-radius: 5px;
+}
+
+.InForm button{
+  margin:5px;
+  width: 60px;
+  height:25px;
+  border-radius: 5px;
+  background-color: #492;
+  color:white;
+}
+
+.InForm button:hover{
+  background-color: rgb(34, 153, 143);
+  cursor: pointer;
+}

@@ -1,0 +1,57 @@
+.nav{
+  top:0px;
+  left:0px;
+  background-color: #222;
+  color: red;
+  height:5vh;
+  width:100vw;
+  margin:0px;
+  padding:0px;
+}
+.landing{
+  background-image: url(https://365psd.com/images/previews/01a/blue-business-background-with-world-globe-free-34163.jpg);
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover;
+  height: 95vh;
+  width:100vw;
+  margin:0px;
+  padding:0px;
+}
+
+.landing p{
+  position:relative;
+  top:100px;
+  margin:0px;
+  padding:0px;
+  text-align: center;
+  font-size: 55px;
+}
+
+li{
+  color:white;
+  display:inline-flex;
+  
+  margin:0px 0px 0px 0px;
+  text-decoration: none;
+  text-align: center;
+  padding: 0px 0px 0px 0px;
+}
+
+ul{
+  margin: 0px;
+  padding:0px;
+  list-style-type: none;
+}
+
+a{
+  color: white;
+  margin:0px;
+  padding:0px 5px 0px 5px;
+  text-decoration: none;
+  font-size: 24px;
+  top:0px;
+}
+
+li:hover{
+  cursor: pointer;
+}
