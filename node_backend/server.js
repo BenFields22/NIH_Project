@@ -34,6 +34,11 @@ app.use(function(req, res, next) {
    next(); 
   });
 
+  app.get('/clear',(req,res)=>{
+    posts = [];
+    res.status(200).send("array cleared");
+  })
+
 app.get('/', (req, res) => {
   res.header("Access-Control-Allow-Origin: *");
   var html = "<ul>";
@@ -43,12 +48,16 @@ app.get('/', (req, res) => {
     html = html + "</li><br>";
 });
   html = html + "</ul>"
-  res.send(html);
+  res.status(200).send(html);
 });
+
+
 
 app.post('/test',(req,res)=>{
   res.header("Access-Control-Allow-Origin: *");
-  res.send("Hello from test");
+  res.status(200).send("Hello from test");
 });
+
+
 
 app.listen(8080, () => console.log('Backend API listening on port 8080!'))
