@@ -1,16 +1,16 @@
 var express = require('express');
 var cors = require('cors');
 var app = express();
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 
 var posts = [];
 
 app.use(cors({
-  origin: 'http://www.localhost:5000'
+  origin: 'http://www.localhost:3000'
 }));
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
@@ -25,7 +25,7 @@ app.use(function(req,res,next){
   console.log("Received a request with URL: "+myURL);
   console.log("body is : "+JSON.stringify(req.body));
   next();
-})
+});
 
 app.use(function(req, res, next) {
    res.header("Access-Control-Allow-Origin", "*");
@@ -34,10 +34,10 @@ app.use(function(req, res, next) {
    next(); 
   });
 
-  app.get('/clear',(req,res)=>{
-    posts = [];
-    res.status(200).send("array cleared");
-  })
+app.get('/clear',(req,res)=>{
+  posts = [];
+  res.status(200).send("array cleared");
+});
 
 app.get('/', (req, res) => {
   res.header("Access-Control-Allow-Origin: *");
@@ -46,18 +46,14 @@ app.get('/', (req, res) => {
     html = html + "<li>";
     html = html + "URL: "+arrayItem.URL + "<br/>RequestBody: "+ arrayItem.RequestBody + "<br/>Time: "+ arrayItem.Time;
     html = html + "</li><br>";
-});
-  html = html + "</ul>"
+  });
+  html = html + "</ul>";
   res.status(200).send(html);
 });
-
-
 
 app.post('/test',(req,res)=>{
   res.header("Access-Control-Allow-Origin: *");
   res.status(200).send("Hello from test");
 });
-
-
 
 app.listen(8080, () => console.log('Backend API listening on port 8080!'))
