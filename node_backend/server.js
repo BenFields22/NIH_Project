@@ -2,12 +2,21 @@ var express = require('express');
 var cors = require('cors');
 var app = express();
 
+var posts = [];
+
 app.use(cors({
   origin: 'http://www.localhost:5000'
 }));
 
 app.use(function(req,res,next){
-  console.log("Received a request with URL: "+req.protocol +"://"+req.get('host')+req.originalUrl);
+  var myURL = req.protocol +"://"+req.get('host')+req.originalUrl;
+  var PostObject = {
+    'URL':myURL,
+    'RequestBody':req.body,
+    'Time': new Date().toLocaleString()
+  };
+  posts.push(PostObject);
+  console.log("Received a request with URL: "+myURL);
   next();
 })
 
@@ -20,7 +29,14 @@ app.use(function(req, res, next) {
 
 app.get('/', (req, res) => {
   res.header("Access-Control-Allow-Origin: *");
-  res.end("Hello World");
+  var html = "<ul>";
+  posts.forEach(function (arrayItem) {
+    html = html + "<li>";
+    html = html + "URL: "+arrayItem.URL + "<br/>RequestBody: "+ arrayItem.RequestBody + "<br/>Time: "+ arrayItem.Time;
+    html = html + "</li><br>";
+});
+  html = html + "</ul>"
+  res.send(html);
 });
 
 app.listen(8080, () => console.log('Backend API listening on port 8080!'))
