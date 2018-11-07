@@ -1,4 +1,4 @@
-FROM node
+FROM node:8.12
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . .
