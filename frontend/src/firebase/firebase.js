@@ -3,12 +3,12 @@ import 'firebase/auth';
 import 'firebase/database';
 
 var config = {
-  apiKey: "AIzaSyBj03ShH6_QTD6f8rW0xKIRnW6UpHHCvm4",
-  authDomain: "langlearn-4a75a.firebaseapp.com",
-  databaseURL: "https://langlearn-4a75a.firebaseio.com",
-  projectId: "langlearn-4a75a",
-  storageBucket: "langlearn-4a75a.appspot.com",
-  messagingSenderId: "515203610995"
+  apiKey: "AIzaSyC-eySP34r8FiVplue7f1MvZIzzG00yhS8",
+  authDomain: "nihproject-1a5b4.firebaseapp.com",
+  databaseURL: "https://nihproject-1a5b4.firebaseio.com",
+  projectId: "nihproject-1a5b4",
+  storageBucket: "nihproject-1a5b4.appspot.com",
+  messagingSenderId: "242879493350"
 };
 
 if (!firebase.apps.length) {
