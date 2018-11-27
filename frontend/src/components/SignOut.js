@@ -20,7 +20,7 @@ class SignOutButton extends Component {
       this.handleSubmit
     }
   >
-    LogOut
+    Logout
   </button>
     )
   }

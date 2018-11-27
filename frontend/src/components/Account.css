@@ -14,11 +14,11 @@
   width: 200px;
   height:25px;
   border-radius: 5px;
-  background-color: #492;
+  background-color: rgb(87, 69, 250);
   color:white;
 }
 
 .Account button:hover{
-  background-color: rgb(34, 153, 143);
+  background-color: rgb(108, 106, 233);
   cursor: pointer;
 }

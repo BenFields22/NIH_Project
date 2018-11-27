@@ -16,14 +16,20 @@ const Navigation = () =>
 
 const NavigationAuth = () =>
   <ul className="nav">
-    <li><Link to={routes.HOME}>Home</Link></li>
-    <li><Link to={routes.ACCOUNT}>Account</Link></li>
-    <li className="logout"><SignOutButton/></li>
+  <li className="title">TITLE</li>
+  <li><Link to={routes.HOME}>Home</Link></li>
+  <li><Link to={routes.ACCOUNT}>Account</Link></li>
+  <li className="logout"><SignOutButton/></li>
   </ul>
+
+  
 
 const NavigationNonAuth = () =>
   <ul className="nav">
-    <li><Link to={routes.SIGN_IN}>SignIn</Link></li>
+  <li className="title">TITLE</li>
+  <li><Link to={routes.SIGN_IN}>SignIn</Link></li>
   </ul>
+
+
 
 export default Navigation;

@@ -12,7 +12,6 @@ import * as routes from '../constants/routes';
 const SignInPage = ({ history }) =>
   <div className="SignIn">
     <div className="cont">
-      <h1>SignIn</h1>
       <SignInForm history={history} />
       <PasswordForgetLink />
       <SignUpLink />
@@ -83,12 +82,14 @@ class SignInForm extends Component {
 
     return (
       <form className="InForm" onSubmit={this.onSubmit}>
+        <h3>Email</h3>
         <input
           value={email}
           onChange={event => this.setState(byPropKey('email', event.target.value))}
           type="email"
           placeholder="Email Address"
         /><br/>
+        <h3>Password</h3>
         <input
           value={password}
           onChange={event => this.setState(byPropKey('password', event.target.value))}
