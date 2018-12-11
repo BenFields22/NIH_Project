@@ -8,6 +8,18 @@
   margin:0px;
   padding:0px;
 }
+
+.navOne{
+  top:0px;
+  left:0px;
+  background-color: #222;
+  color: red;
+  height:5vh;
+  width:100vw;
+  margin:0px;
+  padding:0px;
+}
+
 .landing{
   background-image: url(https://365psd.com/images/previews/01a/blue-business-background-with-world-globe-free-34163.jpg);
   background-repeat: no-repeat; /* Do not repeat the image */

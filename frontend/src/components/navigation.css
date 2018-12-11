@@ -22,10 +22,12 @@ li button:hover{
   right:0px;
 }
 
-.nav{
+.navOne{
   text-align: right;
-  width:100vw;
-  min-width:450px;
+}
+
+.nav{
+  text-align: center;
 }
 
 .title{
