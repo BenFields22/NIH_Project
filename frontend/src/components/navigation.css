@@ -24,8 +24,8 @@ li button:hover{
 
 .nav{
   text-align: right;
-  min-height: 45px;
-  min-width:340px;
+  width:100vw;
+  min-width:450px;
 }
 
 .title{

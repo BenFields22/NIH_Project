@@ -3,8 +3,21 @@
   width:100vw;
   height:95vh;
   display:flex-block;
-  overflow: hidden;
-  min-width:815px;
+  overflow: scroll;
+  min-width:450px;
+}
+
+.home button{
+  margin:5px;
+  width: 50px;
+  height:25px;
+  border-radius: 5px;
+  background-color: rgb(87, 69, 250);
+  color:white;
+}
+
+.home button:hover{
+  cursor: pointer;
 }
 
 #WorkSpace{
@@ -12,14 +25,9 @@
 }
 
 .left{
-  width:50vw;
+  width:90vw;
 }
-.right{
-  text-align: center;
-  position: relative;
-  left:10px;
-  min-width:360px;
-}
+
 
 
 
@@ -34,26 +42,12 @@ select{
   margin:0px;
 }
 
-.right button{
-  margin:5px;
-  width: 200px;
-  height:25px;
-  border-radius: 5px;
-  background-color: rgb(87, 69, 250);
-  color:white;
-}
 
-.right button:hover{
-  cursor: pointer;
-}
-
-.options{
-  min-width:420px;
+.DataOptions{
+  min-width:430px;
 }
 
 .tableSpace{
-  width:50vw;
-  height:87vh;
+  width:90vw;
   overflow: scroll;
-  min-width:400px;
 }

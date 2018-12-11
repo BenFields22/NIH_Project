@@ -1,16 +1,24 @@
 .signup{
   color:black;
-
+  
 }
 
 .signCont{
   background-color:#CCCC;
   height:95vh;
   width:100vw;
+  text-align: center;
 }
-.signCont h1{
+.signCont h1,h2{
   margin:0px;
   padding:0px;
+}
+
+.signCont input{
+  margin:5px;
+  width: 200px;
+  height:25px;
+  border-radius: 5px;
 }
 
 .signCont button{

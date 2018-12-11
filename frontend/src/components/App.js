@@ -12,6 +12,7 @@ import SignInPage from './SignIn';
 import PasswordForgetPage from './PasswordForget';
 import HomePage from './Home';
 import AccountPage from './Account';
+import CalendarPage from './Calendar';
 
 import * as routes from '../constants/routes';
 import withAuthentication from './withAuthentication';
@@ -38,6 +39,7 @@ render(){
         <Route exact path={routes.SIGN_IN} component={SignInPage} />
         <Route exact path={routes.PASSWORD_FORGET} component={PasswordForgetPage} />
         <Route exact path={routes.HOME} component={HomePage} />
+        <Route exact path={routes.CALENDAR} component={CalendarPage} />
         <Route exact path={routes.ACCOUNT} component={AccountPage} />
       </div>
     </Router>

@@ -7,7 +7,6 @@ import * as routes from '../constants/routes';
 
 const SignUpPage = ({ history }) =>
   <div className="signCont">
-    <h1>SignUp</h1>
     <SignUpForm history={history} />
   </div>
 
@@ -16,6 +15,7 @@ const INITIAL_STATE = {
   email: '',
   passwordOne: '',
   passwordTwo: '',
+  MACid: '',
   error: null,
 };
 
@@ -34,6 +34,7 @@ class SignUpForm extends Component {
       username,
       email,
       passwordOne,
+      MACid
     } = this.state;
 
     const {
@@ -44,7 +45,7 @@ class SignUpForm extends Component {
       .then(authUser => {
 
         // Create a user in your own accessible Firebase Database too
-        db.doCreateUser(authUser.user.uid, username, email)
+        db.doCreateUser(authUser.user.uid, username, email,MACid)
           .then(() => {
             localStorage.setItem('user', username);
             this.setState({ ...INITIAL_STATE });
@@ -68,6 +69,7 @@ class SignUpForm extends Component {
       email,
       passwordOne,
       passwordTwo,
+      MACid,
       error,
     } = this.state;
 
@@ -75,34 +77,51 @@ class SignUpForm extends Component {
       passwordOne !== passwordTwo ||
       passwordOne === '' ||
       email === '' ||
-      username === '';
+      username === '' ||
+      MACid === '';
 
     return (
       <form onSubmit={this.onSubmit}>
+        <h2>Full Name</h2>
         <input
           value={username}
           onChange={event => this.setState(byPropKey('username', event.target.value))}
           type="text"
-          placeholder="Full Name"
+          placeholder="First Last"
         />
+        <br/>
+        <h2>Email Address</h2>
         <input
           value={email}
           onChange={event => this.setState(byPropKey('email', event.target.value))}
           type="text"
           placeholder="Email Address"
         />
+        <br/>
+        <h2>Password</h2>
         <input
           value={passwordOne}
           onChange={event => this.setState(byPropKey('passwordOne', event.target.value))}
           type="password"
           placeholder="Password"
         />
+        <br/>
+        <h2>Confirm Password</h2>
         <input
           value={passwordTwo}
           onChange={event => this.setState(byPropKey('passwordTwo', event.target.value))}
           type="password"
           placeholder="Confirm Password"
         />
+        <br/>
+        <h2>Assigned MAC ID</h2>
+        <input
+          value={MACid}
+          onChange={event => this.setState(byPropKey('MACid', event.target.value))}
+          type="text"
+          placeholder="MAC ID"
+        />
+        <br/>
        <button disabled={isInvalid} type="submit">
           Sign Up
         </button>
