@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import "./signIn.css";
+//import Avatar from '@material-ui/core/Avatar';
+//import PropTypes from 'prop-types';
+import LockIcon from '@material-ui/icons/LockOutlined';
+import "./signin.css";
 
 import { SignUpLink } from './SignUp';
 import { PasswordForgetLink } from './PasswordForget';
-import { auth} from '../firebase';
+import { auth} from './firebase';
 import firebase from 'firebase/app';
 import 'firebase/database';
-import * as routes from '../constants/routes';
+import * as routes from './routes';
+
+
 
 const SignInPage = ({ history }) =>
   <div className="SignIn">
@@ -80,8 +85,13 @@ class SignInForm extends Component {
       password === '' ||
       email === '';
 
+
     return (
       <form className="InForm" onSubmit={this.onSubmit}>
+        <div className="lock">
+          <LockIcon />
+        </div>
+        <h3 className="Title">Sign in</h3>
         <h3>Email</h3>
         <input
           value={email}
@@ -105,6 +115,7 @@ class SignInForm extends Component {
     );
   }
 }
+
 
 export default withRouter(SignInPage);
 

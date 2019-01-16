@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Link ,withRouter,} from 'react-router-dom';
-import { auth, db } from '../firebase';
-import "./signup.css";
+import { auth, db } from './firebase';
+import "./SignUp.css";
 
-import * as routes from '../constants/routes';
+import * as routes from './routes';
 
 const SignUpPage = ({ history }) =>
   <div className="signCont">

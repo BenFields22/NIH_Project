@@ -1,0 +1,15 @@
+.myButton{
+    margin:5px;
+    width: 100px;
+    height:30px;
+    border-radius: 5px;
+    font-size: 15px;
+    background-color: rgb(87, 69, 250);
+    color:white;
+    font-weight: bold;
+}
+
+.myButton:hover{
+    background-color: rgb(108, 106, 233);
+    cursor: pointer;
+  }
