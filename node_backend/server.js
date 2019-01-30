@@ -95,4 +95,14 @@ app.post('/capture',(req,res)=>{
   res.status(200).send("Date Posted");
 });
 
+app.post('/updateAlarmTime',(req,res)=>{
+  res.header("Access-Control-Allow-Origin: *");
+  console.log("body is : "+JSON.stringify(req.body));
+  var time = {
+    hour:6,
+    minute:30
+  }
+  res.status(200).send(time);
+});
+
 app.listen(8080, () => console.log('Backend API listening on port 8080!'))
