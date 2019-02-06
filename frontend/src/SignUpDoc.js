@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { Link ,withRouter,} from 'react-router-dom';
+import { withRouter,} from 'react-router-dom';
 import { auth, db } from './firebase';
 import "./SignUp.css";
 
-import * as routes from './routes';
 
-const SignUpPage = ({ history }) =>
+const SignUpDocPage = ({ history }) =>
   <div className="signCont">
-    <SignUpForm history={history} />
+    <SignUpDocForm history={history} />
   </div>
 
 const INITIAL_STATE = {
@@ -17,6 +16,7 @@ const INITIAL_STATE = {
   passwordTwo: '',
   MACid: '',
   phone: '',
+  passPhrase: '',
   error: null,
 };
 
@@ -24,7 +24,7 @@ const byPropKey = (propertyName, value) => () => ({
   [propertyName]: value,
 });
 
-class SignUpForm extends Component {
+class SignUpDocForm extends Component {
   constructor(props) {
     super(props);
     this.state = { ...INITIAL_STATE };
@@ -34,25 +34,17 @@ class SignUpForm extends Component {
     const {
       username,
       email,
-      passwordOne,
-      MACid,
-      phone
+      passwordOne
     } = this.state;
 
-    const {
-      history,
-    } = this.props;
 
     auth.doCreateUserWithEmailAndPassword(email, passwordOne)
       .then(authUser => {
 
         // Create a user in your own accessible Firebase Database too
-        db.doCreateUser(authUser.user.uid, username, email,MACid,phone,2)
+        db.doCreateUser(authUser.user.uid, username, email,999,0,1)
           .then(() => {
-            localStorage.setItem('user', username);
-            localStorage.setItem('doctor', 2);
-            this.setState({ ...INITIAL_STATE });
-            history.push(routes.HOME);
+            alert("Admin Account Created");
           })
           .catch(error => {
             this.setState(byPropKey('error', error));
@@ -72,8 +64,7 @@ class SignUpForm extends Component {
       email,
       passwordOne,
       passwordTwo,
-      MACid,
-      phone,
+      passPhrase,
       error,
     } = this.state;
 
@@ -81,9 +72,9 @@ class SignUpForm extends Component {
       passwordOne !== passwordTwo ||
       passwordOne === '' ||
       email === '' ||
-      username === '' ||
-      MACid === '' ||
-      phone === '';
+      username === ''||
+      passPhrase !== "supersecret"
+      ;
 
     return (
       <form onSubmit={this.onSubmit}>
@@ -119,21 +110,15 @@ class SignUpForm extends Component {
           placeholder="Confirm Password"
         />
         <br/>
-        <h2>Assigned MAC ID</h2>
+        <h2>Secret Phrase</h2>
         <input
-          value={MACid}
-          onChange={event => this.setState(byPropKey('MACid', event.target.value))}
-          type="text"
-          placeholder="MAC ID"
+          value={passPhrase}
+          onChange={event => this.setState(byPropKey('passPhrase', event.target.value))}
+          type="password"
+          placeholder="Enter Phrase"
         />
         <br/>
-        <h2>Phone Number</h2>
-        <input
-          value={phone}
-          onChange={event => this.setState(byPropKey('phone', event.target.value))}
-          type="text"
-          placeholder="Phone Number"
-        />
+        
         <br/>
        <button disabled={isInvalid} type="submit">
           Sign Up
@@ -145,16 +130,8 @@ class SignUpForm extends Component {
   }
 }
 
-const SignUpLink = () =>
-  <p>
-    Don't have an account?
-    {' '}
-    <Link className="signup" to={routes.SIGN_UP}>Sign Up</Link>
-  </p>
-
-export default withRouter(SignUpPage);
+export default withRouter(SignUpDocPage);
 
 export {
-  SignUpForm,
-  SignUpLink,
+  SignUpDocForm
 };

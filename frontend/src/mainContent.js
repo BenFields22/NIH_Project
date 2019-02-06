@@ -1,5 +1,6 @@
 import React from 'react';
 //import Button from '@material-ui/core/Button';
+import MUIDataTable from "mui-datatables";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -65,7 +66,7 @@ const styles = theme => ({
         marginTop:5,
         height:10,
         'min-height':25,
-        padding:5,
+        padding:5
       },
     menuButtonHidden: {
       display: 'none',
@@ -112,6 +113,7 @@ const styles = theme => ({
     Detail: {
         marginRight:10,
         marginTop:10,
+        fontSize:18
     },
     date:{
         marginLeft: 10,
@@ -119,7 +121,7 @@ const styles = theme => ({
         height:30
     },
     table: {
-      minWidth: 300,
+      minWidth: 300
     },
   });
 
@@ -145,6 +147,18 @@ class MainContent extends React.Component {
         { name: 'Sat', Percentage: 0 },
         { name: 'Sun', Percentage: 0 },
       ],
+      data3: [
+          { name: 1, Taken: 0},
+          { name: 2, Taken: 0},
+          { name: 3, Taken: 0},
+          { name: 4, Taken: 0},
+          { name: 5, Taken: 0},
+          { name: 6, Taken: 0},
+          { name: 7, Taken: 0},
+          { name: 8, Taken: 0},
+          { name: 9, Taken: 0},
+          { name: 10,Taken: 0}
+      ],
       stamps: null,
       patientID : ''
     };
@@ -154,7 +168,7 @@ class MainContent extends React.Component {
       db.getIDs().then(snapshot =>{
         this.setState({ users: snapshot.val() });
         var mywords = this.state.users;
-        var keys = Object.keys(mywords);
+        var keys = Object.keys(mywords).filter(e => e !== "999");
         this.setState({size:keys.length})
         //console.log(keys);
         for(var i = 0;i< keys.length;i++){
@@ -200,20 +214,25 @@ class MainContent extends React.Component {
         this.setState({size:keys.length})
         //console.log(keys);
         var set4 = new Set(); 
+        var builtdata = [];
         for(var i = 0;i< keys.length;i++){
           //console.log(keys[i]);
           //console.log(mystamps[keys[i]].date);
           ///console.log(mystamps[keys[i]].timeOfDay);
-          this.setState({data: this.state.data.concat(
+          /*this.setState({data: this.state.data.concat(
             [{ id: i,date: mystamps[keys[i]].date, time: mystamps[keys[i]].timeOfDay }]
             )
-          });
+          });*/
+          builtdata.push([mystamps[keys[i]].date, mystamps[keys[i]].timeOfDay]);
+          
           var currentDate = moment(mystamps[keys[i]].date, 'YYYY-MM-DD');
           var days2 = currentDate.diff(a, 'days');
           if(days2>0){
             set4.add(mystamps[keys[i]].date);
           }
         }
+        this.setState({data:builtdata});
+        console.log(this.state.data)
 
         if(set4.size === 0){
           this.setState({data:[]});
@@ -226,7 +245,7 @@ class MainContent extends React.Component {
         //console.log(set4.size);
         this.setState({startdate:mydays})
         var percentage = (set4.size) / mydays;
-        this.setState({totalAdherance:percentage.toFixed(4)})
+        this.setState({totalAdherance:percentage.toFixed(3)})
         this.setState({days:set4.size})
         
         var mydayCounts = [0,0,0,0,0,0,0];
@@ -241,22 +260,56 @@ class MainContent extends React.Component {
           mydata2[current-1].Percentage = mydata2[current-1].Percentage+1
         }
         for(var k = 0;k<7;k++){
-          mydata2[k].Percentage = 100.0*(mydata2[k].Percentage)/(mydayCounts[k]);
+          mydata2[k].Percentage = (100.0*(mydata2[k].Percentage)/(mydayCounts[k])).toFixed(2);
           //console.log(k)
           //console.log((mydata2[k].Percentage))
           //console.log((mydayCounts[k]))
           //console.log((mydata2[k].Percentage)/(mydayCounts[k]))
         }
         this.setState({data2:mydata2})
+        var mydata3 = [
+          { name: 1, Taken: 0},
+          { name: 2, Taken: 1},
+          { name: 3, Taken: 1},
+          { name: 4, Taken: 1},
+          { name: 5, Taken: 0},
+          { name: 6, Taken: 1},
+          { name: 7, Taken: 1},
+          { name: 8, Taken: 0},
+          { name: 9, Taken: 0},
+          { name: 10,Taken: 1}
+        ];
+        this.setState({data3:mydata3})
       });
     }
 
     render(){
         const { classes } = this.props;
+        const columns = [
+          {
+            name: "Date",
+            options: {
+              filter: false,
+              sort:false
+            }
+          },
+          {
+            name: "Time",
+            options: {
+              filter: false,
+              sort:false
+            }
+          }
+        ];
+
+        const options = {
+          filter: false,
+          responsive: 'scroll'
+        };
         return(
             <div>
             <div className={classes.appBarSpacer} />
-                Start Date<input className={classes.date} type="date" defaultValue="2018-11-11" ref = {(input)=> this.startingdate = input}></input>
+                Start Date<input className={classes.date} type="date" defaultValue="2018-12-30" ref = {(input)=> this.startingdate = input}></input>
                 <br/>
                 Patient ID
                 <select id="PatientNumber" ref = {(input)=> this.patient = input}>
@@ -269,9 +322,9 @@ class MainContent extends React.Component {
                 </button>
               <hr/>
               
-              <Typography variant="h4" gutterBottom component="h3">
-                Adherance
-              </Typography>
+              <div className = {classes.Detail}><strong>Total Adherance:</strong> {this.state.totalAdherance} | <strong>Successful Days:</strong> {this.state.days} | <strong>Total Days:</strong> {this.state.startdate} | <strong>10 Day Adherance:</strong> {this.state.totalAdherance}</div>
+              <hr/>
+              <h3>Adherance by Weekday</h3>
               <Typography component="div" className={classes.chartContainer}>
               <ResponsiveContainer width="99%" height={300}>
                 <LineChart data={this.state.data2}>
@@ -282,41 +335,33 @@ class MainContent extends React.Component {
                   <Line type="monotone" dataKey="Percentage" stroke="#82ca9d" />
                 </LineChart>
               </ResponsiveContainer>
-                <div align="center">
-                <strong className = {classes.Detail}>Total Adherance: {this.state.totalAdherance}</strong><br/>
-                <strong className = {classes.Detail}>Successful Days: {this.state.days}</strong><br/>
-                <strong className = {classes.Detail}>Total Days: {this.state.startdate}</strong>
-              </div>
+              </Typography>
+              <h3>10 Day Adherance</h3>
+              <Typography component="div" className={classes.chartContainer}>
+              <ResponsiveContainer width="99%" height={300}>
+                <LineChart data={this.state.data3}>
+                  <XAxis dataKey="name" />
+                  <YAxis domain={[0, 1]}/>
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="Taken" stroke="#82ca9d" />
+                </LineChart>
+              </ResponsiveContainer>
               </Typography>
               
-              <Typography variant="h4" gutterBottom component="h4">
-                Data
-              </Typography>
-              <div className={classes.tableContainer}>
-              <Paper className={classes.root}>
-                <Table className={classes.table}>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Date</TableCell>
-                      <TableCell >Time</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {this.state.data.map(n => {
-                      return (
-                        <TableRow key={n.id}>
-                          <TableCell component="th" scope="row">
-                            {n.date}
-                          </TableCell>
-                          <TableCell>{n.time}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </Paper>
+              
+                <MUIDataTable
+                  className={classes.table}
+                  title={"Registered Cap Turns"}
+                  data={this.state.data}
+                  columns={columns}
+                  options={options}
+                />
+              
+              
+              
               </div>
-              </div>
+              
         );
     }
     

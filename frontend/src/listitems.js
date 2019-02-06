@@ -35,7 +35,13 @@ class MainListItems extends React.Component {
   }
 
   updateView3 = () => {
-    ReactDOM.render(<AlarmPage/>, document.getElementById('Main_Content'));
+    var doc = localStorage.getItem('doctor');
+    if(doc === "1"){
+      ReactDOM.render(<AlarmPage/>, document.getElementById('Main_Content'));
+    }
+    else{
+      ReactDOM.render(<div><br/><br/><br/>Restricted Content</div>, document.getElementById('Main_Content'));
+    }
   }
 
 

@@ -48,7 +48,7 @@ class CalendarComp extends React.Component {
         db.getIDs().then(snapshot =>{
           this.setState({ users: snapshot.val() });
           var mywords = this.state.users;
-          var keys = Object.keys(mywords);
+          var keys = Object.keys(mywords).filter(e => e !== "999");
           this.setState({size:keys.length})
           //console.log(keys);
           for(var i = 0;i< keys.length;i++){
