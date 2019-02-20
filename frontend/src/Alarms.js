@@ -96,7 +96,7 @@ class AlarmPage extends React.Component {
             </textarea>
             <br/>
             <button onClick={this.sendMessage}>Send</button>
-            
+            <button onClick={this.sendMessage}>Send All</button>
 
         </div>
         );

@@ -3,8 +3,13 @@ var cors = require('cors');
 var app = express();
 var bodyParser = require('body-parser');
 var admin = require("firebase-admin");
+const dotenv = require('dotenv');
+dotenv.config();
 var serviceAccount = require('./privateKey.json');
-
+const client = require('twilio')(
+  process.env.TWILIO_ACCOUT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+);
 var posts = [];
 
 admin.initializeApp({
@@ -72,6 +77,25 @@ URL: http://34.214.27.97/test
 RequestBody: {"unix timestamp":"1544052040","readable timestamp":"Wed Dec 5 23:20:40 2018\n","device id":"24:0A:C4:08:4A:E4","request type":"happy"}
 Time: 2018-12-5 23:20:40
 */
+app.post('/api/messages', (req, res) => {
+  res.header('Content-Type', 'application/json');
+  console.log(req.body.to)
+  console.log(req.body.body)
+  client.messages
+      .create({
+          from: process.env.TWILIO_PHONE_NUMBER,
+          to: req.body.to,
+          body: req.body.body
+      })
+      .then(() => {
+          res.send(JSON.stringify({ success: true }));
+      })
+      .catch(err => {
+          console.log(err);
+          res.send(JSON.stringify({ success: false }));
+      });
+});
+
 app.post('/capture',(req,res)=>{
   res.header("Access-Control-Allow-Origin: *");
   console.log("body is : "+JSON.stringify(req.body));

@@ -1,18 +1,15 @@
 import React from 'react';
 //import Button from '@material-ui/core/Button';
 import MUIDataTable from "mui-datatables";
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import { db } from './firebase';
 import './mainContent.css';
 import ResponsiveContainer from 'recharts/lib/component/ResponsiveContainer';
 import LineChart from 'recharts/lib/chart/LineChart';
+import BarChart from 'recharts/lib/chart/BarChart';
+import Bar from 'recharts/lib/cartesian/Bar';
 import Line from 'recharts/lib/cartesian/Line';
 import XAxis from 'recharts/lib/cartesian/XAxis';
 import YAxis from 'recharts/lib/cartesian/YAxis';
@@ -148,17 +145,19 @@ class MainContent extends React.Component {
         { name: 'Sun', Percentage: 0 },
       ],
       data3: [
-          { name: 1, Taken: 0},
-          { name: 2, Taken: 0},
-          { name: 3, Taken: 0},
-          { name: 4, Taken: 0},
-          { name: 5, Taken: 0},
-          { name: 6, Taken: 0},
-          { name: 7, Taken: 0},
-          { name: 8, Taken: 0},
-          { name: 9, Taken: 0},
-          { name: 10,Taken: 0}
+          { name: "N/A", Taken: 0},
+          { name: "N/A", Taken: 0},
+          { name: "N/A", Taken: 0},
+          { name: "N/A", Taken: 0},
+          { name: "N/A", Taken: 0},
+          { name: "N/A", Taken: 0},
+          { name: "N/A", Taken: 0},
+          { name: "N/A", Taken: 0},
+          { name: "N/A", Taken: 0},
+          { name: "N/A", Taken: 0}
       ],
+      peerAverage:'N/A',
+      peer10DayAvg:'N/A',
       stamps: null,
       patientID : ''
     };
@@ -244,8 +243,8 @@ class MainContent extends React.Component {
         }
         //console.log(set4.size);
         this.setState({startdate:mydays})
-        var percentage = (set4.size) / mydays;
-        this.setState({totalAdherance:percentage.toFixed(3)})
+        var percentage = 100.0*(set4.size) / mydays;
+        this.setState({totalAdherance:percentage.toFixed(1)})
         this.setState({days:set4.size})
         
         var mydayCounts = [0,0,0,0,0,0,0];
@@ -268,18 +267,20 @@ class MainContent extends React.Component {
         }
         this.setState({data2:mydata2})
         var mydata3 = [
-          { name: 1, Taken: 0},
-          { name: 2, Taken: 1},
-          { name: 3, Taken: 1},
-          { name: 4, Taken: 1},
-          { name: 5, Taken: 0},
-          { name: 6, Taken: 1},
-          { name: 7, Taken: 1},
-          { name: 8, Taken: 0},
-          { name: 9, Taken: 0},
-          { name: 10,Taken: 1}
+          { name: "02/03/2019", Taken: 0},
+          { name: "02/04/2019", Taken: 1},
+          { name: "02/05/2019", Taken: 1},
+          { name: "02/06/2019", Taken: 1},
+          { name: "02/07/2019", Taken: 0},
+          { name: "02/08/2019", Taken: 1},
+          { name: "02/09/2019", Taken: 1},
+          { name: "02/10/2019", Taken: 0},
+          { name: "02/11/2019", Taken: 0},
+          { name: "02/12/2019", Taken: 1}
         ];
         this.setState({data3:mydata3})
+        this.setState({peerAverage:"80"});
+        this.setState({peer10DayAvg:"90"});
       });
     }
 
@@ -311,7 +312,7 @@ class MainContent extends React.Component {
             <div className={classes.appBarSpacer} />
                 Start Date<input className={classes.date} type="date" defaultValue="2018-12-30" ref = {(input)=> this.startingdate = input}></input>
                 <br/>
-                Patient ID
+                Patient ID  
                 <select id="PatientNumber" ref = {(input)=> this.patient = input}>
                     {this.state.ids.map((e, key) => {
                         return <option key={key} value={e.value}>{e.name}</option>;
@@ -322,9 +323,28 @@ class MainContent extends React.Component {
                 </button>
               <hr/>
               
-              <div className = {classes.Detail}><strong>Total Adherance:</strong> {this.state.totalAdherance} | <strong>Successful Days:</strong> {this.state.days} | <strong>Total Days:</strong> {this.state.startdate} | <strong>10 Day Adherance:</strong> {this.state.totalAdherance}</div>
+              <div className = {classes.Detail}><strong>Adherence</strong><br/>Average: {this.state.totalAdherance} <br/> Successful Days: {this.state.days} <br/> Total Days: {this.state.startdate} <br/> 10-Day Average: {this.state.totalAdherance}</div>
               <hr/>
-              <h3>Adherance by Weekday</h3>
+              <div className = {classes.Detail}>
+              <strong>Peer Adherence</strong><br/>
+              Peer Average: {this.state.peerAverage} <br/>
+              Peer 10-day Average: {this.state.peer10DayAvg}
+              </div>
+              <hr/>
+              <h3>10-Day Adherence</h3>
+              <Typography component="div" className={classes.chartContainer}>
+              <ResponsiveContainer width="99%" height={300}>
+                <BarChart data={this.state.data3}>
+                  <XAxis dataKey="name" />
+                  <YAxis interval={3} domain={[0, 1.00]}/>
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                  <Tooltip />
+                  <Bar  dataKey="Taken" fill="#82ca9d" />
+                </BarChart>
+              </ResponsiveContainer>
+              </Typography>
+
+              <h3>Adherence by Weekday</h3>
               <Typography component="div" className={classes.chartContainer}>
               <ResponsiveContainer width="99%" height={300}>
                 <LineChart data={this.state.data2}>
@@ -336,18 +356,7 @@ class MainContent extends React.Component {
                 </LineChart>
               </ResponsiveContainer>
               </Typography>
-              <h3>10 Day Adherance</h3>
-              <Typography component="div" className={classes.chartContainer}>
-              <ResponsiveContainer width="99%" height={300}>
-                <LineChart data={this.state.data3}>
-                  <XAxis dataKey="name" />
-                  <YAxis domain={[0, 1]}/>
-                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="Taken" stroke="#82ca9d" />
-                </LineChart>
-              </ResponsiveContainer>
-              </Typography>
+              
               
               
                 <MUIDataTable

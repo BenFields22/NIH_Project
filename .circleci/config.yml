@@ -34,4 +34,6 @@ jobs:
           name: Start containers
           command: |
             set -x
-            docker-compose up -d
+            docker-compose up -d -e TWILIO_ACCOUNT_SID=CIRCLE_TWILIO_ACCOUNT_SID \ 
+                                    TWILIO_AUTH_TOKEN=CIRCLE_TWILIO_AUTH_TOKEN \
+                                    TWILIO_PHONE_NUMBER=CIRLCE_TWILIO_PHONE_NUMBER
