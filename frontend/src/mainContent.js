@@ -1,6 +1,5 @@
 import React from 'react';
 //import Button from '@material-ui/core/Button';
-import MUIDataTable from "mui-datatables";
 
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
@@ -128,8 +127,6 @@ class MainContent extends React.Component {
       days:"N/A",
       startdate: 'N/A',
       anchorEl: null,
-      users: null,
-      size:0,
       ids: [
         
       ],
@@ -159,26 +156,25 @@ class MainContent extends React.Component {
       peerAverage:'N/A',
       peer10DayAvg:'N/A',
       stamps: null,
-      patientID : ''
+      patientID : '',
+      tenDayAdherence:'N/A'
     };
-    componentDidMount() {
 
-      
-      db.getIDs().then(snapshot =>{
-        this.setState({ users: snapshot.val() });
-        var mywords = this.state.users;
-        var keys = Object.keys(mywords).filter(e => e !== "999");
-        this.setState({size:keys.length})
-        //console.log(keys);
-        for(var i = 0;i< keys.length;i++){
+
+    async componentDidMount() {
+      const snapshot =  await db.getIDs();
+      var myids = snapshot.val();
+      //console.log(myids);
+      var filteredIDs = Object.keys(myids).filter(e => e !== "999");
+      var options = [];
+      //console.log(filteredIDs);
+      for(var i = 0;i< filteredIDs.length;i++){
           //console.log(keys[i]);
-          this.setState({ids: this.state.ids.concat(
-            [{ value: keys[i], name: keys[i] }]
-            )
-          });
-        }
-      });
-  
+          options.push(
+              { value: filteredIDs[i], name: filteredIDs[i] }
+          )
+      }
+      this.setState({ids: options});
     }
 
     updateData = () => {
@@ -198,53 +194,45 @@ class MainContent extends React.Component {
           { name: 'Sat', Percentage: 0 },
           { name: 'Sun', Percentage: 0 },
         ]
+        this.setState({peerAverage:"80.0%"});
+        this.setState({peer10DayAvg:"90.0%"});
         if(snapshot.val()===null){
           this.setState({data:[]});
           this.setState({startdate:mydays})
-          this.setState({totalAdherance:0})
+          this.setState({totalAdherance:`${0}%`})
           this.setState({days:0})
           this.setState({data2:mydata2})
+          this.setState({tenDayAdherence:`${0}%`})
           return;
         }
         //console.log(snapshot.val());
         var mystamps = this.state.stamps;
         this.setState({data:[]});
         var keys = Object.keys(mystamps);
-        this.setState({size:keys.length})
         //console.log(keys);
         var set4 = new Set(); 
-        var builtdata = [];
+        //var builtdata = [];
         for(var i = 0;i< keys.length;i++){
-          //console.log(keys[i]);
-          //console.log(mystamps[keys[i]].date);
-          ///console.log(mystamps[keys[i]].timeOfDay);
-          /*this.setState({data: this.state.data.concat(
-            [{ id: i,date: mystamps[keys[i]].date, time: mystamps[keys[i]].timeOfDay }]
-            )
-          });*/
-          builtdata.push([mystamps[keys[i]].date, mystamps[keys[i]].timeOfDay]);
-          
           var currentDate = moment(mystamps[keys[i]].date, 'YYYY-MM-DD');
           var days2 = currentDate.diff(a, 'days');
           if(days2>0){
             set4.add(mystamps[keys[i]].date);
           }
         }
-        this.setState({data:builtdata});
-        console.log(this.state.data)
 
         if(set4.size === 0){
           this.setState({data:[]});
           this.setState({startdate:mydays})
-          this.setState({totalAdherance:0})
+          this.setState({totalAdherance:`${0}%`})
           this.setState({days:0})
           this.setState({data2:mydata2})
+          this.setState({tenDayAdherence:`${0}%`})
           return;
         }
         //console.log(set4.size);
         this.setState({startdate:mydays})
         var percentage = 100.0*(set4.size) / mydays;
-        this.setState({totalAdherance:percentage.toFixed(1)})
+        this.setState({totalAdherance:`${percentage.toFixed(1)}%`})
         this.setState({days:set4.size})
         
         var mydayCounts = [0,0,0,0,0,0,0];
@@ -253,13 +241,15 @@ class MainContent extends React.Component {
             mydayCounts[day-1] = mydayCounts[day-1]+1;
         }
         //console.log(mydayCounts);
-        for (var it = set4.values(), val= null; val=it.next().value; ) {
+        var tempArr = Array.from(set4);
+        
+        for (var j=0;j<tempArr.length;j++ ) {
           //console.log(val);
-          var current = moment(val, 'YYYY-MM-DD').isoWeekday();
+          var current = moment(tempArr[j], 'YYYY-MM-DD').isoWeekday();
           mydata2[current-1].Percentage = mydata2[current-1].Percentage+1
         }
         for(var k = 0;k<7;k++){
-          mydata2[k].Percentage = (100.0*(mydata2[k].Percentage)/(mydayCounts[k])).toFixed(2);
+          mydata2[k].Percentage = (100.0*(mydata2[k].Percentage)/(mydayCounts[k])).toFixed(1);
           //console.log(k)
           //console.log((mydata2[k].Percentage))
           //console.log((mydayCounts[k]))
@@ -267,52 +257,32 @@ class MainContent extends React.Component {
         }
         this.setState({data2:mydata2})
         var mydata3 = [
-          { name: "02/03/2019", Taken: 0},
-          { name: "02/04/2019", Taken: 1},
-          { name: "02/05/2019", Taken: 1},
-          { name: "02/06/2019", Taken: 1},
-          { name: "02/07/2019", Taken: 0},
-          { name: "02/08/2019", Taken: 1},
-          { name: "02/09/2019", Taken: 1},
           { name: "02/10/2019", Taken: 0},
-          { name: "02/11/2019", Taken: 0},
-          { name: "02/12/2019", Taken: 1}
+          { name: "02/11/2019", Taken: 1},
+          { name: "02/12/2019", Taken: 1},
+          { name: "02/13/2019", Taken: 1},
+          { name: "02/14/2019", Taken: 0},
+          { name: "02/15/2019", Taken: 1},
+          { name: "02/16/2019", Taken: 1},
+          { name: "02/17/2019", Taken: 0},
+          { name: "02/18/2019", Taken: 0},
+          { name: "02/19/2019", Taken: 1}
         ];
         this.setState({data3:mydata3})
-        this.setState({peerAverage:"80"});
-        this.setState({peer10DayAvg:"90"});
+        
+        this.setState({tenDayAdherence:"60.0%"});
       });
     }
 
     render(){
         const { classes } = this.props;
-        const columns = [
-          {
-            name: "Date",
-            options: {
-              filter: false,
-              sort:false
-            }
-          },
-          {
-            name: "Time",
-            options: {
-              filter: false,
-              sort:false
-            }
-          }
-        ];
-
-        const options = {
-          filter: false,
-          responsive: 'scroll'
-        };
+        
         return(
             <div>
             <div className={classes.appBarSpacer} />
-                Start Date<input className={classes.date} type="date" defaultValue="2018-12-30" ref = {(input)=> this.startingdate = input}></input>
+                <label className="label">Start Date</label><input className={classes.date} type="date" defaultValue="2018-12-30" ref = {(input)=> this.startingdate = input}></input>
                 <br/>
-                Patient ID  
+                <label id="PatientLabel">Patient ID </label>
                 <select id="PatientNumber" ref = {(input)=> this.patient = input}>
                     {this.state.ids.map((e, key) => {
                         return <option key={key} value={e.value}>{e.name}</option>;
@@ -323,7 +293,13 @@ class MainContent extends React.Component {
                 </button>
               <hr/>
               
-              <div className = {classes.Detail}><strong>Adherence</strong><br/>Average: {this.state.totalAdherance} <br/> Successful Days: {this.state.days} <br/> Total Days: {this.state.startdate} <br/> 10-Day Average: {this.state.totalAdherance}</div>
+              <div className = {classes.Detail}>
+                <strong>Adherence</strong><br/>
+                Average: {this.state.totalAdherance} <br/> 
+                Successful Days: {this.state.days} <br/> 
+                Total Days: {this.state.startdate} <br/> 
+                10-Day Average: {this.state.tenDayAdherence}
+              </div>
               <hr/>
               <div className = {classes.Detail}>
               <strong>Peer Adherence</strong><br/>
@@ -356,19 +332,6 @@ class MainContent extends React.Component {
                 </LineChart>
               </ResponsiveContainer>
               </Typography>
-              
-              
-              
-                <MUIDataTable
-                  className={classes.table}
-                  title={"Registered Cap Turns"}
-                  data={this.state.data}
-                  columns={columns}
-                  options={options}
-                />
-              
-              
-              
               </div>
               
         );

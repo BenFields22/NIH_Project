@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import moment from 'moment';
 import { Calendar, CalendarControls } from 'react-yearly-calendar';
 import './Calendar.css';
@@ -43,24 +42,20 @@ class CalendarComp extends React.Component {
         };
       }
     
-      componentDidMount() {
-        var test = localStorage.getItem('user');
-        db.getIDs().then(snapshot =>{
-          this.setState({ users: snapshot.val() });
-          var mywords = this.state.users;
-          var keys = Object.keys(mywords).filter(e => e !== "999");
-          this.setState({size:keys.length})
-          //console.log(keys);
-          for(var i = 0;i< keys.length;i++){
+      async componentDidMount() {
+        const snapshot =  await db.getIDs();
+        var myids = snapshot.val();
+        //console.log(myids);
+        var filteredIDs = Object.keys(myids).filter(e => e !== "999");
+        var options = [];
+        //console.log(filteredIDs);
+        for(var i = 0;i< filteredIDs.length;i++){
             //console.log(keys[i]);
-            this.setState({ids: this.state.ids.concat(
-              [{ value: keys[i], name: keys[i] }]
-              )
-            });
-          }
-        });
-        ReactDOM.render(<h1>Hi, {test}</h1>, document.getElementById('Welcome'));
-    
+            options.push(
+                { value: filteredIDs[i], name: filteredIDs[i] }
+            )
+        }
+        this.setState({ids: options});
       }
     
       onPrevYear() {
@@ -195,7 +190,7 @@ class CalendarComp extends React.Component {
           <div >
               <div className={classes.appBarSpacer} />
               <div className="DataOptions">
-                <table>
+                <table className="label2">
                   <tbody>
                     <tr>
                       <td>
