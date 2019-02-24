@@ -17,7 +17,7 @@ class Schedule{
         this.everydayScheduleShutDownTask = Cron.schedule('59 23 * * *',()=>{
           var d = new Date();
           console.log("Running everydayScheduleShutDownTask:",d);
-          this.ShutDownTasks();
+          this.shutDownTasks();
         }, {
           scheduled: false,
           timezone: "America/Los_Angeles"
