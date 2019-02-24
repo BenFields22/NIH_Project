@@ -9,12 +9,12 @@ class Schedule{
         this.everydayScheduleSetupTask = Cron.schedule('1 0 * * *',()=>{
           var d = new Date();
           console.log("Running everydayScheduleSetupTask:",d);
-          this.ScheduleMessageJobs();
+          this.scheduleMessageJobs();
         }, {
           scheduled: false,
           timezone: "America/Los_Angeles"
         });
-        this.everydayScheduleShutDownTask = Cron.schedule('59 11 * * *',()=>{
+        this.everydayScheduleShutDownTask = Cron.schedule('59 23 * * *',()=>{
           var d = new Date();
           console.log("Running everydayScheduleShutDownTask:",d);
           this.ShutDownTasks();
