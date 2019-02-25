@@ -1,0 +1,171 @@
+openapi: 3.0.0
+info:
+  title: Backend Server API
+  description: This API describes the interface available to the backend server
+  contact:
+    email: benfields724@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0-oas3
+servers:
+- url: /
+tags:
+- name: developers
+  description: Operations available to regular developers
+- name: device
+  description: Operations completed by the hardware device
+paths:
+  /api:
+    get:
+      tags:
+      - developers
+      summary: provides the API documentation
+      description: |
+        To understand the interface of the backend server an interested
+        developer can use this endpoint to see the formal API
+      responses:
+        200:
+          description: page with formal API documentation
+  /history:
+    get:
+      tags:
+      - developers
+      summary: provides a list of requests that the server has seen
+      description: |
+        To track all incoming requests this endpoint will provide
+        a list of each request seen
+      responses:
+        200:
+          description: page with a list of requests
+          content:
+            text/html:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/requestList'
+  /clear:
+    get:
+      tags:
+      - developers
+      summary: clears the list of requests that the server has seen
+      description: "If to many requests are shown can use this endpoint to clear the\
+        \ stored \nrequests\n"
+      responses:
+        200:
+          description: text indicating the array was cleared
+  /startMessageSystem:
+    get:
+      tags:
+      - developers
+      summary: used to lauch the message system
+      description: |
+        This request will create a schedule object and start the system
+      responses:
+        200:
+          description: text indicating the system was started successfully
+        400:
+          description: text indicating the system was already running
+  /stopMessageSystem:
+    get:
+      tags:
+      - developers
+      summary: used to stop the message system
+      description: |
+        This request will create destroy the schedule object and stop the system
+      responses:
+        200:
+          description: text indicating the system was shutdown successfully
+        400:
+          description: text indicating the system was not running
+  /capture:
+    post:
+      tags:
+      - device
+      summary: used to register a cap turn to the application
+      description: |
+        This request take the id and time and register a cap turn
+      requestBody:
+        description: cap turn event to register
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/captureInfo'
+      responses:
+        200:
+          description: text indicating the cap turn was registered successfully
+        400:
+          description: text indicating the cap turn was not registered
+  /updateAlarmTime:
+    post:
+      tags:
+      - device
+      summary: used to sync the alarm time between server and device
+      description: |
+        This request takes the device id and queries firebase to get the updated
+        alarm time
+      requestBody:
+        description: the Mac address of the device
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/deviceID'
+      responses:
+        200:
+          description: an object containing the updated times to take eye drops
+        400:
+          description: text indicating the provided id was incorrect
+components:
+  schemas:
+    deviceID:
+      required:
+      - device_id
+      type: string
+      properties:
+        device_id:
+          type: string
+          format: XX:XX:XX:XX:XX:XX
+          example: CC:50:E3:B7:81:3C
+    captureInfo:
+      required:
+      - device_id
+      - readable_timestamp
+      - request_type
+      - unix_timestamp
+      type: object
+      properties:
+        device_id:
+          type: string
+          format: XX:XX:XX:XX:XX:XX
+          example: CC:50:E3:B7:81:3C
+        unix_timestamp:
+          type: string
+          format: unix time
+          example: "1551057175"
+        readable_timestamp:
+          type: string
+          format: YY-MM-DD HH:MM:SS
+          example: 2018-02-25 12:12:01
+        request_type:
+          type: string
+          format: text
+          example: FIRST_WAKEUP
+    requestList:
+      required:
+      - RequestBody
+      - Time
+      - URL
+      type: object
+      properties:
+        URL:
+          type: string
+          format: http://server/endpoint
+          example: http://universaladherence.com:8080/api
+        RequestBody:
+          type: string
+          format: '"device_id":"CC:50:E3:B7:81:3C"'
+          example: Widget Adapter
+        Time:
+          type: string
+          format: YYYY-MM-DD HH:MM:SS
+          example: 2016-08-29T09:12:33.000Z

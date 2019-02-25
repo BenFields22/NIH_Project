@@ -70,7 +70,7 @@ app.get('/stopMessageSystem',(req,res)=>{
   }
 });
 
-app.get('/', (req, res) => {
+app.get('/history', (req, res) => {
   res.header("Access-Control-Allow-Origin: *");
   var html = "<ul>";
   posts.forEach(function (arrayItem) {
@@ -80,6 +80,12 @@ app.get('/', (req, res) => {
   });
   html = html + "</ul>";
   res.status(200).send(html);
+});
+
+app.get('/api', (req, res) => {
+  res.header("Access-Control-Allow-Origin: *");
+  
+  res.status(200).sendFile(__dirname+"/api/openapi.yaml")
 });
 
 app.post('/api/messages', (req, res) => {
