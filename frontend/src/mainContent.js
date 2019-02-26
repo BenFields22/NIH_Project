@@ -177,14 +177,128 @@ class MainContent extends React.Component {
       this.setState({ids: options});
     }
 
+    formatDate(date){
+
+      var dd = date.getDate();
+      var mm = date.getMonth()+1;
+      var yyyy = date.getFullYear();
+      if(dd<10) {dd='0'+dd}
+      if(mm<10) {mm='0'+mm}
+      date = mm+'/'+dd+'/'+yyyy;
+      return date
+   }
+
+   peerAvg = async (id,numberOfDays) => {
+    var a = moment(this.startingdate.value, 'YYYY-MM-DD');
+    const snapshot =  await db.getIDs();
+    var myids = snapshot.val();
+    //console.log(myids);
+    var filteredIDs = Object.keys(myids).filter(e => e !== "999");
+    filteredIDs = filteredIDs.filter(e => e !== id);
+    //console.log("Filtered ids: ",filteredIDs);
+    var numIDS = filteredIDs.length;
+    var total = 0;
+    for(var i = 0;i<filteredIDs.length;i++){
+      var StampSnapShot = await db.getStamps(filteredIDs[i]);
+      var timeStamps = StampSnapShot.val();
+      //console.log(timeStamps);
+      //console.log("Current id: ",filteredIDs[i]);
+      if(timeStamps == null){
+        continue;
+      }
+      var timeStampkeys = Object.keys(timeStamps);
+      //console.log(timeStampkeys);
+      var set4 = new Set(); 
+      for(var j = 0;j< timeStampkeys.length;j++){
+        var currentDate = moment(timeStamps[timeStampkeys[j]].date, 'YYYY-MM-DD');
+        var days2 = currentDate.diff(a, 'days');
+        if(days2>0){
+          //console.log(timeStamps[timeStampkeys[j]].date);
+          set4.add(timeStamps[timeStampkeys[j]].date);
+        }
+      }
+      //console.log(set4.size);
+      var res = (set4.size) / numberOfDays;
+      //console.log(numberOfDays);
+      //console.log("res ",res);
+      total = total + res;
+      //console.log("running total ",total);
+    }
+    //console.log("Total is: ",total);
+    var percentage = ((total/numIDS)*100.0).toFixed(1);
+    //console.log(percentage);
+    return `${percentage}%`
+   }
+
+   peerTenAvg = async (id) => {
+    var a = moment(this.startingdate.value, 'YYYY-MM-DD');
+    const snapshot =  await db.getIDs();
+    var myids = snapshot.val();
+    //console.log(myids);
+    var filteredIDs = Object.keys(myids).filter(e => e !== "999");
+    filteredIDs = filteredIDs.filter(e => e !== id);
+    //console.log("Filtered ids: ",filteredIDs);
+    var numIDS = filteredIDs.length;
+    var resTotal = 0;
+    for(var i = 0;i<filteredIDs.length;i++){
+      var StampSnapShot = await db.getStamps(filteredIDs[i]);
+      var timeStamps = StampSnapShot.val();
+      //console.log(timeStamps);
+      //console.log("Current id: ",filteredIDs[i]);
+      if(timeStamps == null){
+        continue;
+      }
+      var timeStampkeys = Object.keys(timeStamps);
+      //console.log(timeStampkeys);
+      var set4 = new Set(); 
+      for(var j = 0;j< timeStampkeys.length;j++){
+        var currentDate = moment(timeStamps[timeStampkeys[j]].date, 'YYYY-MM-DD');
+        var days2 = currentDate.diff(a, 'days');
+        if(days2>0){
+          //console.log(timeStamps[timeStampkeys[j]].date);
+          set4.add(timeStamps[timeStampkeys[j]].date);
+        }
+      }
+      var total = 0;
+      for(var d=1; d<=10; d++) {
+        var setFormatday = moment().subtract(d, 'days').format("YYYY-MM-DD");
+        var check = set4.has(setFormatday);
+        //console.log(check);
+        if(check === true){
+          total = total +1;
+        }
+        else{
+          continue;
+        } 
+      }
+      total = (total/10.0);
+      //console.log(set4.size);
+      //console.log(numberOfDays);
+      //console.log("res ",total);
+      resTotal = resTotal + total;
+      //console.log("running total ",resTotal);
+    }
+    //console.log("Total is: ",total);
+    var percentage = ((resTotal/numIDS)*100.0).toFixed(1);
+    //console.log(percentage);
+    return `${percentage}%`
+   }
+
     updateData = () => {
       var a = moment(this.startingdate.value, 'YYYY-MM-DD');
+      //console.log(a.toDate());
       var b = moment();
       var mydays = b.diff(a, 'days');
+      //console.log(mydays);
       //console.log("Updating value");
       //console.log("value is "+this.patient.value);
-      db.getStamps(this.patient.value).then(snapshot =>{
+      db.getStamps(this.patient.value).then(async (snapshot) =>{
+        //peer adherence
         this.setState({ stamps: snapshot.val() });
+        var peeraverage = await this.peerAvg(this.patient.value,mydays);
+        var peerTenDay = await this.peerTenAvg(this.patient.value,mydays);
+        //console.log("Peer 10-day average:",peerTenDay);
+        //console.log("Peer average: ",peeraverage);
         var mydata2 = [
           { name: 'Mon', Percentage: 0},
           { name: 'Tue', Percentage: 0 },
@@ -194,8 +308,20 @@ class MainContent extends React.Component {
           { name: 'Sat', Percentage: 0 },
           { name: 'Sun', Percentage: 0 },
         ]
-        this.setState({peerAverage:"80.0%"});
-        this.setState({peer10DayAvg:"90.0%"});
+        this.setState({peerAverage:peeraverage});
+        this.setState({peer10DayAvg:peerTenDay});
+        var mydata3 = [
+        ];
+        for(var x=1; x<=10; x++) {
+          var firstthisday = moment().subtract(x, 'days').format("MM/DD/YY");
+          var item1 = {
+            name: firstthisday,
+            Taken: 0
+          }
+          mydata3.push(item1);
+        }
+        mydata3.reverse();
+        
         if(snapshot.val()===null){
           this.setState({data:[]});
           this.setState({startdate:mydays})
@@ -203,6 +329,7 @@ class MainContent extends React.Component {
           this.setState({days:0})
           this.setState({data2:mydata2})
           this.setState({tenDayAdherence:`${0}%`})
+          this.setState({data3:mydata3})
           return;
         }
         //console.log(snapshot.val());
@@ -216,6 +343,7 @@ class MainContent extends React.Component {
           var currentDate = moment(mystamps[keys[i]].date, 'YYYY-MM-DD');
           var days2 = currentDate.diff(a, 'days');
           if(days2>0){
+            //console.log(mystamps[keys[i]].date);
             set4.add(mystamps[keys[i]].date);
           }
         }
@@ -227,8 +355,34 @@ class MainContent extends React.Component {
           this.setState({days:0})
           this.setState({data2:mydata2})
           this.setState({tenDayAdherence:`${0}%`})
+          this.setState({data3:mydata3})
           return;
         }
+        mydata3 = [
+        ];
+        var total = 0;
+        for(var d=1; d<=10; d++) {
+          var thisday = moment().subtract(d, 'days').format("MM/DD/YY");
+          var setFormatday = moment().subtract(d, 'days').format("YYYY-MM-DD");
+          var check = set4.has(setFormatday);
+          //console.log(check);
+          if(check === true){
+            check=1;
+            total = total +1;
+          }
+          else{
+            check = 0;
+          } 
+          var item = {
+            name: thisday,
+            Taken: check
+          }
+          mydata3.push(item);
+        }
+        mydata3.reverse();
+        //console.log(mydata3);
+        total = ((total/10.0)*100.0).toFixed(1);
+        this.setState({tenDayAdherence:`${total}%`})
         //console.log(set4.size);
         this.setState({startdate:mydays})
         var percentage = 100.0*(set4.size) / mydays;
@@ -236,10 +390,17 @@ class MainContent extends React.Component {
         this.setState({days:set4.size})
         
         var mydayCounts = [0,0,0,0,0,0,0];
+        var count = 0;
+        //console.log(a.toDate());
         for (var m = moment(a); m.isBefore(b); m.add(1, 'days')) {
+            //console.log(m.toDate());
+          
+            count = count+1;
             var day = m.isoWeekday();
+            //console.log(day);
             mydayCounts[day-1] = mydayCounts[day-1]+1;
         }
+        //console.log(count);
         //console.log(mydayCounts);
         var tempArr = Array.from(set4);
         
@@ -256,21 +417,7 @@ class MainContent extends React.Component {
           //console.log((mydata2[k].Percentage)/(mydayCounts[k]))
         }
         this.setState({data2:mydata2})
-        var mydata3 = [
-          { name: "02/10/2019", Taken: 0},
-          { name: "02/11/2019", Taken: 1},
-          { name: "02/12/2019", Taken: 1},
-          { name: "02/13/2019", Taken: 1},
-          { name: "02/14/2019", Taken: 0},
-          { name: "02/15/2019", Taken: 1},
-          { name: "02/16/2019", Taken: 1},
-          { name: "02/17/2019", Taken: 0},
-          { name: "02/18/2019", Taken: 0},
-          { name: "02/19/2019", Taken: 1}
-        ];
         this.setState({data3:mydata3})
-        
-        this.setState({tenDayAdherence:"60.0%"});
       });
     }
 

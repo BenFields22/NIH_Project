@@ -13,7 +13,7 @@
     "react-numeric-input": "^2.2.3",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^2.1.3",
+    "react-scripts": "^2.1.5",
     "react-yearly-calendar": "^1.2.1",
     "recharts": "^1.4.1"
   },

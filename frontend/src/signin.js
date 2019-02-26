@@ -58,8 +58,8 @@ class SignInForm extends Component {
         const db = firebase.database();
        var ref = db.ref('users');
        ref.orderByChild('email').equalTo(email).on("child_added", function(snapshot) {
-        console.log(snapshot.val().username);
-        console.log(snapshot.val().doctor);
+        //console.log(snapshot.val().username);
+        //console.log(snapshot.val().doctor);
         var name = snapshot.val().username;
         var doctor = snapshot.val().doctor;
         localStorage.setItem('user', name);

@@ -140,6 +140,10 @@ class DataComp extends React.Component {
         var StampSnapShot = await db.getStamps(id);
         var timeStamps = StampSnapShot.val();
         //console.log(timeStamps);
+        if(timeStamps == null){
+          this.setState({data:builtdata});
+          return;
+        }
         var stampkeys = Object.keys(timeStamps);
         //console.log(stampkeys);
         for(var j = 0;j<stampkeys.length;j++){
@@ -163,6 +167,9 @@ class DataComp extends React.Component {
             var StampSnapShot = await db.getStamps(id);
             var timeStamps = StampSnapShot.val();
             //console.log(timeStamps);
+            if(timeStamps == null){
+              continue;
+            }
             var stampkeys = Object.keys(timeStamps);
             //console.log(stampkeys);
             for(var j = 0;j<stampkeys.length;j++){

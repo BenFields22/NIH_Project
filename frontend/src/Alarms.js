@@ -97,12 +97,11 @@ class AlarmPage extends React.Component {
               <hr/>
             <h2>Time of Application</h2>
             <input
-              type="time" value="18:00:00"
+              type="time" defaultValue="18:00:00"
             />
             <br/>
             <h2>Standard Message</h2>
-            <textarea cols="50" rows="5">
-              Time to apply your eye drops.
+            <textarea cols="50" rows="5" defaultValue="Time to apply your eye drops.">
             </textarea>
             <br/>
             <hr/>
@@ -114,8 +113,7 @@ class AlarmPage extends React.Component {
               Minutes after Application for Second Reminder<br/>
               <NumericInput min={0}  value={30}/>
             </div><br/>
-            <textarea cols="50" rows="5">
-              Looks like you still need to use your eye drops.
+            <textarea cols="50" rows="5" defaultValue="Looks like you still need to use your eye drops.">
             </textarea>
             <br/>
             <hr/>
