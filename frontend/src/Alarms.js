@@ -2,11 +2,14 @@ import React from 'react';
 import './Alarms.css';
 import { db } from './firebase';
 import { withStyles } from '@material-ui/core/styles';
-import NumericInput from 'react-numeric-input';
 import ReactDOM from 'react-dom';
+import TextField from '@material-ui/core/TextField';
 
 const styles = theme => ({
     appBarSpacer: theme.mixins.toolbar,
+  });
+  const byPropKey = (propertyName, value) => () => ({
+    [propertyName]: value,
   });
 
 class AlarmPage extends React.Component {
@@ -15,7 +18,13 @@ class AlarmPage extends React.Component {
         this.state = {
           receiveMessages:1,
           size:0,
-          ids: []
+          ids: [],
+          time: '',
+          firstInterval:0,
+          secondInterval:0,
+          MainMessage:'N/A',
+          ReminderMessage:'N/A',
+          status:''
           };
       }
     
@@ -35,9 +44,55 @@ class AlarmPage extends React.Component {
         this.setState({ids: options});
       }
 
-      updateData = () => {
-        
+      updateData = async () => {
+        var snapshot = await db.getUser(this.patient.value);
+        var user = snapshot.val();
+        //console.log(user);
+        //console.log(user.doctor);
+        //console.log(user.mainMessage);
+        //console.log(user.secondMessage);
+        //console.log(user.firstReminder);
+        //console.log(user.secondReminder);
+        //console.log(user.timeOfApplication);
+        //console.log(user.receiveMessages);
+
+        this.setState({
+          MainMessage: user.mainMessage,
+          firstInterval:user.firstReminder,
+          secondInterval:user.secondReminder,
+          ReminderMessage:user.secondMessage,
+          time:user.timeOfApplication,
+          receiveMessages: user.receiveMessages,
+          status:'Data Loaded'
+        });
+        setTimeout(()=>{
+          this.setState({
+            status:""
+          });
+        },2000);
       }
+
+      updateDataOnDB = () => {
+        db.UpdateContentOfUser(this.patient.value,
+          this.state.receiveMessages,
+          this.state.MainMessage,
+          this.state.ReminderMessage,
+          this.state.time,
+          this.state.firstInterval,
+          this.state.secondInterval);
+          //console.log("updated");
+          this.setState({
+            status:"Content Updated"
+          });
+          setTimeout(()=>{
+            this.setState({
+              status:""
+            });
+          },2000);
+      }
+        
+        
+      
 
       sendMessage = () => {
         if (window.confirm('Are you sure you want to send this message?')) {
@@ -48,6 +103,7 @@ class AlarmPage extends React.Component {
             
         }
       }
+
 
       printReceiveOpt = () =>{
         if(this.state.receiveMessages === 1){
@@ -86,9 +142,10 @@ class AlarmPage extends React.Component {
                 <button className="myButton" onClick={this.updateData}  >
                     Load
                 </button>
-                <button className="myButton" onClick={this.updateData}  >
+                <button className="myButton" onClick={this.updateDataOnDB}  >
                     Update
                 </button>
+                <div>{this.state.status}</div>
               <hr/>
               Receive Messages: {this.printReceiveOpt()} <br/>
               <button className="myButton" onClick={this.changeReceiveFlag}  >
@@ -96,12 +153,22 @@ class AlarmPage extends React.Component {
               </button>
               <hr/>
             <h2>Time of Application</h2>
-            <input
-              type="time" defaultValue="18:00:00"
+            <TextField
+              id="time"
+              type="time"
+              value={this.state.time}
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={event => this.setState(byPropKey('time', event.target.value))}
+              inputProps={{
+                step: 100, 
+              }}
             />
             <br/>
             <h2>Standard Message</h2>
-            <textarea cols="50" rows="5" defaultValue="Time to apply your eye drops.">
+            <textarea cols="50" rows="5" value={this.state.MainMessage} onChange={event => this.setState(byPropKey('MainMessage', event.target.value))}>
             </textarea>
             <br/>
             <hr/>
@@ -109,11 +176,12 @@ class AlarmPage extends React.Component {
             <div>
               
               Minutes after Application for First Reminder<br/>
-              <NumericInput min={0}  value={10}/><br/><br/>
+              <input type="number" name="quantity" min={0} value={this.state.firstInterval} onChange={event => this.setState(byPropKey('firstInterval', event.target.value))}/>
+              <br/><br/>
               Minutes after Application for Second Reminder<br/>
-              <NumericInput min={0}  value={30}/>
+              <input type="number" name="quantity" min={0} value={this.state.secondInterval} onChange={event => this.setState(byPropKey('secondInterval', event.target.value))}/>
             </div><br/>
-            <textarea cols="50" rows="5" defaultValue="Looks like you still need to use your eye drops.">
+            <textarea cols="50" rows="5" value={this.state.ReminderMessage} onChange={event => this.setState(byPropKey('ReminderMessage', event.target.value))}>
             </textarea>
             <br/>
             <hr/>

@@ -195,6 +195,9 @@ class MainContent extends React.Component {
     //console.log(myids);
     var filteredIDs = Object.keys(myids).filter(e => e !== "999");
     filteredIDs = filteredIDs.filter(e => e !== id);
+    if(filteredIDs.length === 0){
+      return "0%";
+    }
     //console.log("Filtered ids: ",filteredIDs);
     var numIDS = filteredIDs.length;
     var total = 0;
@@ -237,6 +240,9 @@ class MainContent extends React.Component {
     //console.log(myids);
     var filteredIDs = Object.keys(myids).filter(e => e !== "999");
     filteredIDs = filteredIDs.filter(e => e !== id);
+    if(filteredIDs.length === 0){
+      return "0%";
+    }
     //console.log("Filtered ids: ",filteredIDs);
     var numIDS = filteredIDs.length;
     var resTotal = 0;
@@ -427,7 +433,7 @@ class MainContent extends React.Component {
         return(
             <div>
             <div className={classes.appBarSpacer} />
-                <label className="label">Start Date</label><input className={classes.date} type="date" defaultValue="2018-12-30" ref = {(input)=> this.startingdate = input}></input>
+                <label className="label">Start Date</label><input className={classes.date} type="date" defaultValue="2019-02-16" ref = {(input)=> this.startingdate = input}></input>
                 <br/>
                 <label id="PatientLabel">Patient ID </label>
                 <select id="PatientNumber" ref = {(input)=> this.patient = input}>

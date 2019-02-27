@@ -47,7 +47,10 @@ class SignUpForm extends Component {
       .then(authUser => {
 
         // Create a user in your own accessible Firebase Database too
-        db.doCreateUser(authUser.user.uid, username, email,MACid,phone,2)
+        db.doCreateUser(authUser.user.uid, username, email,MACid,phone,2,1,
+          `${username} , it is time to apply your eye drops.`,
+          `[Reminder] ${username} , it is time to apply your eye drops.`,
+          "18:00:00",10,30)
           .then(() => {
             localStorage.setItem('user', username);
             localStorage.setItem('doctor', 2);
@@ -96,6 +99,7 @@ class SignUpForm extends Component {
         />
         <br/>
         <h2>Email Address</h2>
+        Example: name@domain.com<br/>
         <input
           value={email}
           onChange={event => this.setState(byPropKey('email', event.target.value))}
@@ -120,6 +124,7 @@ class SignUpForm extends Component {
         />
         <br/>
         <h2>Assigned MAC ID</h2>
+        Example: 11:22:33:44:55:66<br/>
         <input
           value={MACid}
           onChange={event => this.setState(byPropKey('MACid', event.target.value))}
@@ -127,7 +132,9 @@ class SignUpForm extends Component {
           placeholder="MAC ID"
         />
         <br/>
-        <h2>Phone Number</h2>
+        <h2>Phone Number</h2> 
+        (No spaces or parenthesis) <br/>
+        Example: 1112223333<br/>
         <input
           value={phone}
           onChange={event => this.setState(byPropKey('phone', event.target.value))}

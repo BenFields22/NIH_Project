@@ -114,6 +114,7 @@ app.post('/capture',(req,res)=>{
   var reqDate = date.toISOString().slice(0,10);
   var id = req.body.device_id;
   console.log('id is ',id);
+  db.doCreateTimeStamp(time,id,reqDate,formattedTime);
   var device = mySchedule.getDeviceWithID(id);
   //console.log("Device: ",device);
   if(device == null){
@@ -121,7 +122,6 @@ app.post('/capture',(req,res)=>{
     res.status(400).send("No matching ID");
   }
   else{
-    db.doCreateTimeStamp(time,id,reqDate,formattedTime);
     mySchedule.stopJob(id);
     res.status(200).send("Capture Registered");
   }
