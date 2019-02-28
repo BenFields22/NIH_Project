@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var db = require('./db');
 var Schedule = require('./Schedule');
 var Twilio = require('./messenger');
+var moment = require('moment-timezone');
 var posts = [];
 var mySchedule = null;
 app.use(cors({
@@ -114,7 +115,7 @@ app.post('/capture',(req,res)=>{
   var reqDate = date.toISOString().slice(0,10);
   var id = req.body.device_id;
   console.log('id is ',id);
-  db.doCreateTimeStamp(time,id,reqDate,formattedTime);
+  
   var device = mySchedule.getDeviceWithID(id);
   //console.log("Device: ",device);
   if(device == null){
@@ -122,6 +123,9 @@ app.post('/capture',(req,res)=>{
     res.status(400).send("No matching ID");
   }
   else{
+    db.doCreateTimeStamp(time,id,reqDate,formattedTime);
+    var currentTime= moment().tz("America/Los_Angeles").format();
+    db.setTime(id,currentTime);
     mySchedule.stopJob(id);
     res.status(200).send("Capture Registered");
   }
@@ -130,6 +134,8 @@ app.post('/capture',(req,res)=>{
 app.post('/updateAlarmTime',(req,res)=>{
   res.header("Access-Control-Allow-Origin: *");
   console.log("body is : "+JSON.stringify(req.body));
+  var currentTime= moment().tz("America/Los_Angeles").format();
+  db.setTime(id,currentTime);
   var time = {
     hour:6,
     minute:30

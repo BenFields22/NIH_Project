@@ -2,6 +2,7 @@
 BuildAndPushToAWS.sh
 CODE_LOG.txt
 
+
 # dependencies
 node_modules
 
@@ -10,6 +11,9 @@ coverage
 
 # production
 build
+
+.vscode
+generateCapTurns.py
 
 # misc
 .DS_Store

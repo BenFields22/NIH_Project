@@ -63,7 +63,7 @@ class Schedule{
     
       //place ieach device instance n dictionary with the DeviceID being the key
       console.log("Placing into Dictionary");
-      var Mid = "CC:50:E3:B7:81:3C"
+      var Mid = "11:22:33:44:55:66"
       this.mymap[Mid] = device;
       //start tasks
       device.startTasks();

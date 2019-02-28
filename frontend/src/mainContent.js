@@ -157,7 +157,8 @@ class MainContent extends React.Component {
       peer10DayAvg:'N/A',
       stamps: null,
       patientID : '',
-      tenDayAdherence:'N/A'
+      tenDayAdherence:'N/A',
+      lastCommunication:'N/A'
     };
 
 
@@ -290,7 +291,11 @@ class MainContent extends React.Component {
     return `${percentage}%`
    }
 
-    updateData = () => {
+    updateData = async () => {
+      var lastCommSnap = await db.getUser(this.patient.value);
+      var lastCommVal = lastCommSnap.val();
+      var lastComm = lastCommVal.lastCommunication;
+      this.setState({lastCommunication:lastComm});
       var a = moment(this.startingdate.value, 'YYYY-MM-DD');
       //console.log(a.toDate());
       var b = moment();
@@ -451,7 +456,8 @@ class MainContent extends React.Component {
                 Average: {this.state.totalAdherance} <br/> 
                 Successful Days: {this.state.days} <br/> 
                 Total Days: {this.state.startdate} <br/> 
-                10-Day Average: {this.state.tenDayAdherence}
+                10-Day Average: {this.state.tenDayAdherence}<br/>
+                Last Received Communication: {this.state.lastCommunication}
               </div>
               <hr/>
               <div className = {classes.Detail}>

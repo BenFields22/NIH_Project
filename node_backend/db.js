@@ -14,8 +14,15 @@ function doCreateTimeStamp(Unixtime,Mid, date,timeOfDay){
         });
 }
 
+function setTime(Mid,time){
+    db.ref(`users/${Mid}`).update({
+        lastCommunication:time
+        });
+}
+
 module.exports = {
-    doCreateTimeStamp
+    doCreateTimeStamp,
+    setTime
 }
 
 

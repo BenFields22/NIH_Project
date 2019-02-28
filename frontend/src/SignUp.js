@@ -50,7 +50,7 @@ class SignUpForm extends Component {
         db.doCreateUser(authUser.user.uid, username, email,MACid,phone,2,1,
           `${username} , it is time to apply your eye drops.`,
           `[Reminder] ${username} , it is time to apply your eye drops.`,
-          "18:00:00",10,30)
+          "18:00:00",10,30,'N/A')
           .then(() => {
             localStorage.setItem('user', username);
             localStorage.setItem('doctor', 2);

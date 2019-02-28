@@ -2,7 +2,7 @@ import { db } from './firebase';
 
 // User API
 
-export const doCreateUser = (id, username, email,Mid,phone,doctor,receiveMessages,mainMessage,secondMessage,timeOfApplication,firstReminder,secondReminder) =>
+export const doCreateUser = (id, username, email,Mid,phone,doctor,receiveMessages,mainMessage,secondMessage,timeOfApplication,firstReminder,secondReminder,lastCommunication) =>
   db.ref(`users/${Mid}`).set({
     username,
     email,
@@ -14,8 +14,11 @@ export const doCreateUser = (id, username, email,Mid,phone,doctor,receiveMessage
     secondMessage,
     timeOfApplication,
     firstReminder,
-    secondReminder
+    secondReminder,
+    lastCommunication
   });
+
+
 
   export const UpdateContentOfUser = (Mid,AppreceiveMessages,AppmainMessage,AppsecondMessage,ApptimeOfApplication,AppfirstReminder,AppsecondReminder) =>
     db.ref(`users/${Mid}`).update({
@@ -37,7 +40,7 @@ export const onceGetUsers = () =>
 export const getStamps = (id) =>
   db.ref(`users/${id}/stamps`).once('value');
 
-  export const getUser = (id) =>
+export const getUser = (id) =>
   db.ref(`users/${id}`).once('value');
 
 
