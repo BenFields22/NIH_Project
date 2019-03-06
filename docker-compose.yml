@@ -3,6 +3,8 @@ services:
   backend:
     container_name: nih_backend
     build: ./node_backend/
+    expose: 
+      - 8080
     ports:
       - "8080:8080"
     volumes:
@@ -12,6 +14,8 @@ services:
     build: ./frontend/
     ports:
       - "3000:3000"
+    links:
+      - backend
     volumes:
       - ./frontend:/usr/src/app
     depends_on:

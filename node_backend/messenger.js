@@ -9,7 +9,7 @@ const client = require('twilio')(
 function sendMessage(to,msg){
     client.messages
       .create({
-          from: process.env.TWILIO_PHONE_NUMBER,
+          from: "[Reminder]",
           to: to,
           body: msg
       })
@@ -21,6 +21,26 @@ function sendMessage(to,msg){
       });
 }
 
+function sendBulk(numbers,body,res){
+    Promise.all(
+        numbers.map(number => {
+          return client.messages.create({
+            to: number,
+            from: process.env.TWILIO_MESSAGING_SERVICE_SID,
+            body: body
+          });
+        })
+      )
+        .then(messages => {
+          console.log('Messages sent!');
+          res.status(200).send(JSON.stringify({ success: true }));
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(400).send(JSON.stringify({ error: err }));
+        })
+}
+
 function sendMessageWithResponse(to,msg,res){
     client.messages
       .create({
@@ -30,16 +50,17 @@ function sendMessageWithResponse(to,msg,res){
       })
       .then(() => {
           console.log("success");
-          res.status(200).send("Success");
+          res.status(200).send(JSON.stringify({ success: true }));
       })
       .catch(err => {
           console.log(err);
-          res.status(400).send(err);
+          res.status(400).send(JSON.stringify({ error: err }));
       });
 }
 
 module.exports = {
     sendMessageWithResponse,
-    sendMessage
+    sendMessage,
+    sendBulk
 }
 

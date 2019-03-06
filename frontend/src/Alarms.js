@@ -2,7 +2,6 @@ import React from 'react';
 import './Alarms.css';
 import { db } from './firebase';
 import { withStyles } from '@material-ui/core/styles';
-import ReactDOM from 'react-dom';
 import TextField from '@material-ui/core/TextField';
 
 const styles = theme => ({
@@ -16,7 +15,9 @@ class AlarmPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+          messageStatus:'',
           receiveMessages:1,
+          phoneNumber:null,
           size:0,
           ids: [],
           time: '',
@@ -24,7 +25,8 @@ class AlarmPage extends React.Component {
           secondInterval:0,
           MainMessage:'N/A',
           ReminderMessage:'N/A',
-          status:''
+          status:'',
+          customMessage:'[enter custom message]'
           };
       }
     
@@ -63,6 +65,7 @@ class AlarmPage extends React.Component {
           ReminderMessage:user.secondMessage,
           time:user.timeOfApplication,
           receiveMessages: user.receiveMessages,
+          phoneNumber: user.phone,
           status:'Data Loaded'
         });
         setTimeout(()=>{
@@ -95,13 +98,77 @@ class AlarmPage extends React.Component {
       
 
       sendMessage = () => {
-        if (window.confirm('Are you sure you want to send this message?')) {
-          console.log("Sending Message");
-          ReactDOM.render("Message Sent", document.getElementById('MessageStatus'));
-          setTimeout(()=>{ReactDOM.render("", document.getElementById('MessageStatus'));},2000);
-        } else {
-            
+        if(this.state.phoneNumber === null){
+          this.setState({messageStatus:"Load patient data first"});
+          setTimeout(()=>{
+            this.setState({messageStatus:""})
+          },2000);
+          return;
         }
+        else{
+            if (window.confirm('Are you sure you want to send this message?')) {
+              //console.log("Sending Message: ",this.state.customMessage);
+              var PatientNumber = `+1${this.state.phoneNumber}`;
+              //console.log("Number: ",PatientNumber);
+              
+              fetch('/api/messages', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({to: PatientNumber, body: this.state.customMessage})
+              }).then(res => res.json()).then(data => {
+                if (data.success) { 
+                  this.setState({messageStatus:"Message Sent"});
+                  setTimeout(()=>{
+                    this.setState({messageStatus:""})
+                  },2000);
+                }
+                else{
+                  this.setState({messageStatus:data.error});
+                }                   
+                });
+              }
+          }
+        } 
+
+      sendMessageAll = async () => {
+        if (window.confirm('Are you sure you want to send this message to all study participants?')) {
+          //console.log("Sending Message: ",this.state.customMessage);
+          //console.log("Number: ",this.state.phoneNumber);
+          var UserSnap = await db.onceGetUsers();
+          var users = UserSnap.val();
+          //console.log(users);
+          const snapshot =  await db.getIDs();
+          var myids = snapshot.val();
+          //console.log(myids);
+          var mynumbers = [];
+          var filteredIDs = Object.keys(myids).filter(e => e !== "999");
+          for(var i = 0;i<filteredIDs.length;i++){
+            var PatientNumber = `+1${users[filteredIDs[i]].phone}`;
+            //console.log(PatientNumber);
+            mynumbers.push(PatientNumber)
+          }
+          //console.log(mynumbers);
+
+          fetch('/api/messagesBulk', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({Numbers: mynumbers, body: this.state.customMessage})
+          }).then(res => res.json()).then(data => {
+            if (data.success) { 
+              this.setState({messageStatus:"Message Sent"});
+              setTimeout(()=>{
+                this.setState({messageStatus:""})
+              },2000);
+            }
+            else{
+              this.setState({messageStatus:data.error});
+            }                   
+            });
+        } 
       }
 
 
@@ -186,13 +253,13 @@ class AlarmPage extends React.Component {
             <br/>
             <hr/>
             <h2>Custom Message</h2>
-            <textarea cols="50" rows="5">
+            <textarea cols="50" rows="5" value={this.state.customMessage} onChange={event => this.setState(byPropKey('customMessage', event.target.value))}>
               
             </textarea>
             <br/>
             <button className="myButton" onClick={this.sendMessage}>Send</button>
-            <button className="myButton" onClick={this.sendMessage}>Send All</button>
-            <div id="MessageStatus"></div>
+            <button className="myButton" onClick={this.sendMessageAll}>Send All</button>
+            <div>{this.state.messageStatus}</div>
 
         </div>
         );

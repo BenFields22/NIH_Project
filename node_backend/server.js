@@ -91,9 +91,20 @@ app.get('/api', (req, res) => {
 
 app.post('/api/messages', (req, res) => {
   res.header("Access-Control-Allow-Origin: *");
+  res.header('Content-Type', 'application/json');
   console.log(req.body.to);
   console.log(req.body.body);
+  //res.status(200).send(JSON.stringify({ success: true }));
   Twilio.sendMessageWithResponse(req.body.to,req.body.body,res);
+});
+
+app.post('/api/messagesBulk', (req, res) => {
+  res.header("Access-Control-Allow-Origin: *");
+  res.header('Content-Type', 'application/json');
+  console.log(req.body.Numbers);
+  console.log(req.body.body);
+  //res.status(200).send(JSON.stringify({ success: true }));
+  Twilio.sendBulk(req.body.Numbers,req.body.body,res);
 });
 
 app.post('/capture',(req,res)=>{
@@ -115,8 +126,11 @@ app.post('/capture',(req,res)=>{
   var reqDate = date.toISOString().slice(0,10);
   var id = req.body.device_id;
   console.log('id is ',id);
-  
-  var device = mySchedule.getDeviceWithID(id);
+  db.doCreateTimeStamp(time,id,reqDate,formattedTime);
+  var currentTime= moment().tz("America/Los_Angeles").format();
+  db.setTime(id,currentTime);
+  res.status(200).send("Capture Registered");
+  /*var device = mySchedule.getDeviceWithID(id);
   //console.log("Device: ",device);
   if(device == null){
     console.log("ERROR: No matching ID");
@@ -124,11 +138,10 @@ app.post('/capture',(req,res)=>{
   }
   else{
     db.doCreateTimeStamp(time,id,reqDate,formattedTime);
-    var currentTime= moment().tz("America/Los_Angeles").format();
-    db.setTime(id,currentTime);
+    
     mySchedule.stopJob(id);
     res.status(200).send("Capture Registered");
-  }
+  }*/
 });
 
 app.post('/updateAlarmTime',(req,res)=>{
