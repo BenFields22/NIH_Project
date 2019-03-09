@@ -8,17 +8,8 @@ var Twilio = require('./messenger');
 var moment = require('moment-timezone');
 var posts = [];
 var mySchedule = null;
-var whitelist = ['http://localhost:3000', 'http://www.localhost:3000','http://www.universaladherence.com','http://www.universaladherence.com:3000','http://universaladherence.com','http://universaladherence.com:3000','http://35.165.157.126:3000','http://35.165.157.126']
-var corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  }
-}
-app.use(cors(corsOptions));
+
+app.use(cors());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
