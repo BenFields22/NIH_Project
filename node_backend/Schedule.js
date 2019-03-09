@@ -48,6 +48,7 @@ class Schedule{
       for (var key in this.mymap){
         //console.log( key, mymap[key] );
         this.mymap[key].stopTasks();
+        delete this.mymap[key];
       }
     }
 
