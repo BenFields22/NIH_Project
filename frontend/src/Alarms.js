@@ -93,9 +93,6 @@ class AlarmPage extends React.Component {
             });
           },2000);
       }
-        
-        
-      
 
       sendMessage = () => {
         if(this.state.phoneNumber === null){
@@ -243,10 +240,10 @@ class AlarmPage extends React.Component {
             <div>
               
               Minutes after Application for First Reminder<br/>
-              <input type="number" name="quantity" min={0} value={this.state.firstInterval} onChange={event => this.setState(byPropKey('firstInterval', event.target.value))}/>
+              <input type="number" name="quantity" min={0} max={30} value={this.state.firstInterval} onChange={event => this.setState(byPropKey('firstInterval', event.target.value))}/>
               <br/><br/>
               Minutes after Application for Second Reminder<br/>
-              <input type="number" name="quantity" min={0} value={this.state.secondInterval} onChange={event => this.setState(byPropKey('secondInterval', event.target.value))}/>
+              <input type="number" name="quantity" min={0} max={60} value={this.state.secondInterval} onChange={event => this.setState(byPropKey('secondInterval', event.target.value))}/>
             </div><br/>
             <textarea cols="50" rows="5" value={this.state.ReminderMessage} onChange={event => this.setState(byPropKey('ReminderMessage', event.target.value))}>
             </textarea>

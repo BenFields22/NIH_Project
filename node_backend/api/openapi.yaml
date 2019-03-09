@@ -15,6 +15,8 @@ tags:
   description: Operations available to regular developers
 - name: device
   description: Operations completed by the hardware device
+- name: frontend
+  description: Operations completed by the frontend UI
 paths:
   /api:
     get:
@@ -113,10 +115,118 @@ paths:
       responses:
         200:
           description: an object containing the updated times to take eye drops
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/timeInfo'
         400:
           description: text indicating the provided id was incorrect
+  /api/messages:
+    post:
+      tags:
+      - frontend
+      summary: used to send an SMS message to a patient
+      description: |
+        This request takes a custom message and a phone number for a SMS message
+      requestBody:
+        description: the information needed to send the message. To number and message body.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/messageInfo'
+      responses:
+        200:
+          description: success json object indicating the message was sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/messageResponse'
+        400:
+          description: error object indicating there was an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/messageResponse'
+  /api/messagesBulk:
+    post:
+      tags:
+      - frontend
+      summary: used to send an SMS message to every patient
+      description: |
+        This request takes a custom message and sends it to all patients
+      requestBody:
+        description: the information needed to send the message. To numbers and message body.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/messageInfo'
+      responses:
+        200:
+          description: success json object indicating the message was sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/messageResponse'
+        400:
+          description: error object indicating there was an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/messageResponse'
 components:
   schemas:
+    messageResponse:
+      required:
+      - error
+      - success
+      type: object
+      properties:
+        success:
+          type: boolean
+          format: true or false
+          example: true
+        error:
+          type: string
+          format: text
+          example: 'CAPTURE ERROR: message system not running'
+    messageInfo:
+      required:
+      - body
+      - to
+      type: object
+      properties:
+        to:
+          type: string
+          format: +XXXXXXXXXX
+          example: +12223334444
+        body:
+          type: string
+          format: text
+          example: this will be send in an SMS message
+    timeInfo:
+      required:
+      - hour
+      - intervalOne
+      - intervalTwo
+      - minute
+      type: object
+      properties:
+        hour:
+          type: string
+          format: HH
+          example: "12"
+        minute:
+          type: string
+          format: MM
+          example: "30"
+        intervalOne:
+          type: string
+          format: XX
+          example: "10"
+        intervalTwo:
+          type: string
+          format: XX
+          example: "30"
     deviceID:
       required:
       - device_id

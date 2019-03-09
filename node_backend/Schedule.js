@@ -1,7 +1,7 @@
 const Cron = require("node-cron");
 var DeviceInstance = require('./DeviceInstance');
-var db = require('./db');
 var Twilio = require('./messenger');
+import { db } from './firebase';
 
 class Schedule{
     constructor(){
@@ -29,9 +29,10 @@ class Schedule{
     }
     
     createMessageEvent(time,msg,phone){
+        console.log("Scheduling Messege Event for time: ",time, " with message: ",msg," to phone: ",phone);
         var task = new Cron.schedule(time, ()=>{
         const d = new Date();
-        console.log('Message Event at:',d);
+        console.log('\nMessage Event at:',d);
         Twilio.sendMessage(phone,msg);
         console.log("Sending message '",msg,"' to phone number ",phone);
         }, {
@@ -50,23 +51,63 @@ class Schedule{
       }
     }
 
-    scheduleMessageJobs(){
+    async scheduleMessageJobs(){
       console.log("Querying Firebase");
       //query firebase for all users
-      var task1 = this.createMessageEvent("0 18 * * *","Ben, Time to take Medication","+15412243874");
-      var task2 = this.createMessageEvent("10 18 * * *","Ben, this is your first Reminder that it is time to take Medication","+15412243874");
-      var task3 = this.createMessageEvent("30 18 * * *","Ben, this is your second Reminder that it is time to take Medication","+15412243874");
-    
-      //create deviceInstances
-      console.log("Creating device Instances");
-      var device = new DeviceInstance(0,task1,task2,task3);
-    
-      //place ieach device instance n dictionary with the DeviceID being the key
-      console.log("Placing into Dictionary");
-      var Mid = "11:22:33:44:55:66"
-      this.mymap[Mid] = device;
-      //start tasks
-      device.startTasks();
+      var snap = await db.onceGetUsers();
+      var users = snap.val();
+      //console.log(users);
+      var ids = Object.keys(users).filter(e => e !== "999");
+      //console.log(ids);
+      for(var i = 0;i<ids.length;i++){
+        var time = users[ids[i]].timeOfApplication;
+        var comps = time.split(':');
+        var hour = parseInt(comps[0],10);
+        var minute = parseInt(comps[1],10);
+        var mainMessage = users[ids[i]].mainMessage;
+        var phone = `+1${users[ids[i]].phone}`;
+        var reminderMessage = users[ids[i]].secondMessage;
+        var intervalOne = parseInt(users[ids[i]].firstReminder,10);
+        var intervalTwo = parseInt(users[ids[i]].secondReminder,10);
+        var task1 = this.createMessageEvent(`${minute} ${hour} * * *`,mainMessage,phone);
+        var minute2 = minute+intervalOne;
+        var hour2;
+        if(minute2>60){
+          hour2 = hour+1;
+          minute2 = minute2-60;
+        }
+        else{
+          hour2 = hour;
+        }
+        var task2 = this.createMessageEvent(`${minute2} ${hour2} * * *`,reminderMessage,phone);
+        var minute3 = minute+intervalTwo;
+        var hour3;
+        if(minute2>60){
+          hour3 = hour+1;
+          minute3 = minute3-60;
+        }
+        else{
+          hour3 = hour;
+        }
+        var task3 = this.createMessageEvent(`${minute3} ${hour3} * * *`,reminderMessage,phone);
+      
+        //create deviceInstances
+        console.log("Creating device Instances");
+        var device = new DeviceInstance(0,task1,task2,task3);
+      
+        //place each device instance in dictionary with the DeviceID being the key
+        var Mid = ids[i];
+        this.mymap[Mid] = device;
+        if(users[ids[i]].receiveMessages == 1){
+          //start tasks
+          device.startTasks();
+          console.log("starting tasks");
+        }
+        else{
+          console.log("tasks not started");
+          continue;
+        }
+      }
     }
 
     shutDownSystem(){

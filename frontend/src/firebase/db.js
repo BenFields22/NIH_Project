@@ -18,7 +18,14 @@ export const doCreateUser = (id, username, email,Mid,phone,doctor,receiveMessage
     lastCommunication
   });
 
-
+  export const doCreateUserDoc = (id, username, email,Mid,phone,doctor) =>
+    db.ref(`users/${Mid}`).set({
+      username,
+      email,
+      id,
+      phone,
+      doctor
+    });
 
   export const UpdateContentOfUser = (Mid,AppreceiveMessages,AppmainMessage,AppsecondMessage,ApptimeOfApplication,AppfirstReminder,AppsecondReminder) =>
     db.ref(`users/${Mid}`).update({

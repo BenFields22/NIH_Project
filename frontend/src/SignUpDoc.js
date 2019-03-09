@@ -42,7 +42,7 @@ class SignUpDocForm extends Component {
       .then(authUser => {
 
         // Create a user in your own accessible Firebase Database too
-        db.doCreateUser(authUser.user.uid, username, email,999,0,1)
+        db.doCreateUserDoc(authUser.user.uid, username, email,999,0,1)
           .then(() => {
             alert("Admin Account Created");
           })

@@ -2,7 +2,7 @@ var express = require('express');
 var cors = require('cors');
 var app = express();
 var bodyParser = require('body-parser');
-var db = require('./db');
+import { db } from './firebase';
 var Schedule = require('./Schedule');
 var Twilio = require('./messenger');
 var moment = require('moment-timezone');
@@ -126,34 +126,65 @@ app.post('/capture',(req,res)=>{
   var reqDate = date.toISOString().slice(0,10);
   var id = req.body.device_id;
   console.log('id is ',id);
-  db.doCreateTimeStamp(time,id,reqDate,formattedTime);
+  
   var currentTime= moment().tz("America/Los_Angeles").format();
   db.setTime(id,currentTime);
-  res.status(200).send("Capture Registered");
-  /*var device = mySchedule.getDeviceWithID(id);
+  //res.status(200).send("Capture Registered");
+  try{
+    var device = mySchedule.getDeviceWithID(id);
+  }
+  catch(err){
+    console.log("CAPTURE ERROR: Scheduler not running");
+    res.status(400).send("CAPTURE ERROR: Scheduler not running");
+    return;
+  }
+  
   //console.log("Device: ",device);
   if(device == null){
     console.log("ERROR: No matching ID");
-    res.status(400).send("No matching ID");
+    res.status(400).send("ERROR: No matching ID");
   }
   else{
     db.doCreateTimeStamp(time,id,reqDate,formattedTime);
-    
     mySchedule.stopJob(id);
     res.status(200).send("Capture Registered");
-  }*/
+  }
 });
 
-app.post('/updateAlarmTime',(req,res)=>{
+app.post('/updateAlarmTime',async (req,res)=>{
   res.header("Access-Control-Allow-Origin: *");
   console.log("body is : "+JSON.stringify(req.body));
   var currentTime= moment().tz("America/Los_Angeles").format();
-  db.setTime(id,currentTime);
-  var time = {
-    hour:6,
-    minute:30
+  var id = req.body.device_id;
+  console.log('id is ',id);
+  try{
+    var device = mySchedule.getDeviceWithID(id);
   }
-  res.status(200).send(time);
+  catch(err){
+    console.log("UPDATE ERROR: Scheduler not running");
+    res.status(400).send("UPDATE ERROR: Scheduler not running");
+    return;
+  }
+  if(device == null){
+    console.log("ERROR: No matching ID");
+    res.status(400).send("ERROR: No matching ID");
+  }
+  else{
+    db.setTime(id,currentTime);
+    var snap = await db.getUser(id);
+    var user = snap.val();
+    var time = user.timeOfApplication;
+    var comps = time.split(':');
+    var today = new Date();
+    var d = new Date(today.getFullYear(), today.getMonth(), today.getDay(), comps[0], comps[1]);
+    var timeObj = {
+      hour:d.getUTCHours(),
+      minute:d.getUTCMinutes(),
+      intervalOne: user.firstReminder,
+      intervalTwo: user.secondReminder
+    }
+    res.status(200).send(timeObj);
+  }
 });
 
 app.listen(8080, () => console.log('Backend API listening on port 8080!'))

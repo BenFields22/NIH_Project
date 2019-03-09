@@ -9,7 +9,7 @@ const client = require('twilio')(
 function sendMessage(to,msg){
     client.messages
       .create({
-          from: "[Reminder]",
+          from: process.env.TWILIO_PHONE_NUMBER,
           to: to,
           body: msg
       })
