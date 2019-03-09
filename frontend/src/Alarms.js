@@ -108,7 +108,7 @@ class AlarmPage extends React.Component {
               var PatientNumber = `+1${this.state.phoneNumber}`;
               //console.log("Number: ",PatientNumber);
               
-              fetch('/api/messages', {
+              fetch('http://35.165.157.126:8080/api/messages', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json'
@@ -125,6 +125,9 @@ class AlarmPage extends React.Component {
                   this.setState({messageStatus:data.error});
                 }                   
                 });
+              }
+              else{
+                return;
               }
           }
         } 
@@ -148,7 +151,7 @@ class AlarmPage extends React.Component {
           }
           //console.log(mynumbers);
 
-          fetch('/api/messagesBulk', {
+          fetch('http://35.165.157.126:8080/api/messagesBulk', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -165,6 +168,9 @@ class AlarmPage extends React.Component {
               this.setState({messageStatus:data.error});
             }                   
             });
+        }
+        else{
+          return;
         } 
       }
 
