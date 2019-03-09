@@ -1,7 +1,7 @@
 # NIH_Project
 
 ### Current Build  [![CircleCI](https://circleci.com/gh/BenFields724/NIH_Project/tree/master.svg?style=svg)](https://circleci.com/gh/BenFields724/NIH_Project/tree/master)
-
+#### [https://www.universaladherence.com](https://www.universaladherence.com)
 ## Software Architecture
 ![Sofware Architecture](docs/imgs/architecture.png)
 #### Figure 1: Visual diagram of software architecture elements and communications.
@@ -12,7 +12,7 @@
   The client-side content is all developed using the React framework, which is a JavaScript library created by Facebook for the creation of User Interface (UI) elements. In the backend, a Node server is used to communicate with the device and place data into the database. This application leverages Google Firebase for User Authentication and Authorization as well as their Realtime Database services. The software system is being hosted through AWS and leverages many features of AWS such as Route53 for DNS services and Elastic Container Service (ECS) for the deployment of containerized software. 
  
 ## Build
-#### Note: Docker must be installed on your system prior to running the application.
+#### Note: Docker must be installed and running on your system prior to starting the application.
 
 ### Commands:
 run the following commands to get started with this application on your system
