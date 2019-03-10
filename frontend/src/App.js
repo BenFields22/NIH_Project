@@ -10,6 +10,7 @@ import SignUpPage from './SignUp';
 import AccountPage from './Account';
 import PasswordForgetPage from './PasswordForget';
 import SignUpDoc from './SignUpDoc';
+import UserGuide from './userGuide';
 
 
 
@@ -29,6 +30,7 @@ class App extends Component {
         <Route exact path={routes.SIGN_UP} component={SignUpPage} />
         <Route exact path={routes.PASSWORD_FORGET} component={PasswordForgetPage} />
         <Route exact path={routes.ACCOUNT} component={AccountPage} />
+        <Route exact path={routes.USER_GUIDE} component={UserGuide} />
       </div>
     </Router>
     );

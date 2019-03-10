@@ -31,6 +31,8 @@ class SimpleMenu extends React.Component {
       
       history.push(routes.ACCOUNT);   
     }
+    
+
   
     onSubmit = (event) => {
       auth.doSignOut();

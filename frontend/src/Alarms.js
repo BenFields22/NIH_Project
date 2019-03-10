@@ -213,7 +213,7 @@ class AlarmPage extends React.Component {
                     Load
                 </button>
                 <button className="myButton" onClick={this.updateDataOnDB}  >
-                    Update
+                    Save
                 </button>
                 <div>{this.state.status}</div>
               <hr/>

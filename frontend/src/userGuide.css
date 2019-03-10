@@ -1,0 +1,51 @@
+.GuideContent{
+    max-width: 960px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.title{
+    font-size: 30px;
+    text-align: center;
+    font-weight: bold;
+    color:black;
+}
+.option{
+    margin-top:5px;
+    margin-bottom:5px;
+    border:none;
+}
+.option:hover{
+    margin-top:5px;
+    margin-bottom:5px;
+    border:none;
+    font-size: 18px;
+}
+
+ul{
+    list-style-type:disc;
+}
+
+.GuideContent a{
+    border:none;
+}
+
+
+img{
+    position: relative;
+    width:100%;
+    margin:10px;
+    text-align: center;
+}
+
+.heading1{
+    font-size:20px;
+    text-align: left;
+    margin:20px;
+}
+
+.guideText{
+    text-align: justify;
+    font-size: 16px;
+    max-width: 960px;
+}

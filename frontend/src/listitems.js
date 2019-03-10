@@ -6,6 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import DataIcon from '@material-ui/icons/CloudDownload';
 import AlarmIcon from '@material-ui/icons/Alarm';
+import HelpIcon from '@material-ui/icons/Help';
 //import AlarmIcon from '@material-ui/icons/Alarm';
 import Calendar from '@material-ui/icons/CalendarTodaySharp';
 import List from '@material-ui/core/List';
@@ -14,6 +15,7 @@ import MainContent from './mainContent';
 import MyCalendar from './Calendar';
 import AlarmPage from './Alarms';
 import DataPage from './dataPanel';
+import UserGuide from './userGuide';
 
 
 
@@ -50,6 +52,10 @@ class MainListItems extends React.Component {
     ReactDOM.render(<DataPage/>, document.getElementById('Main_Content'));
   }
 
+  updateView5 = () => {
+    ReactDOM.render(<UserGuide/>, document.getElementById('Main_Content'));
+  }
+
   render(){
     return(
       <div>
@@ -58,13 +64,13 @@ class MainListItems extends React.Component {
             <ListItemIcon>
               <DashboardIcon />
             </ListItemIcon>
-            <ListItemText primary="Dashboard" />
+            <ListItemText primary="Adherence" />
           </ListItem>
           <ListItem button onClick={this.updateView4}>
             <ListItemIcon>
               <DataIcon />
             </ListItemIcon>
-            <ListItemText primary="Dashboard" />
+            <ListItemText primary="Data" />
           </ListItem>
           <ListItem button onClick={this.updateView}>
             <ListItemIcon>
@@ -78,7 +84,12 @@ class MainListItems extends React.Component {
             </ListItemIcon>
             <ListItemText primary="Alarms" />
           </ListItem>
-          
+          <ListItem button onClick={this.updateView5}>
+            <ListItemIcon>
+              <HelpIcon/>
+            </ListItemIcon>
+            <ListItemText primary="User Guide" />
+          </ListItem>
         </List>
         </div>
       );
